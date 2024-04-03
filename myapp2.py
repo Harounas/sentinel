@@ -105,8 +105,8 @@ with col2:
       date2=pd.to_datetime(st.date_input("End Date", Enddate))
 
 df=df[(df['date_crf']>=date1)&(df['date_crf']<=date2)].copy()
-df=df.dropna(subsets=['siteregion_crf'])
-df=df.dropna(subsets=['date_crf'])
+df=df.dropna(columns=['siteregion_crf'])
+df=df.dropna(columns=['siteregion_crf'])
 st.sidebar.header("Choose your filter : ")
 ##Create for State
 
