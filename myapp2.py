@@ -106,7 +106,7 @@ with col2:
 
 df=df[(df['date_crf']>=date1)&(df['date_crf']<=date2)].copy()
 df=df.dropna(subset=['siteregion_crf'])
-df=df.dropna(subset=['siteregion_crf'])
+df=df.dropna(subset=['date_crf'])
 st.sidebar.header("Choose your filter : ")
 ##Create for State
 
