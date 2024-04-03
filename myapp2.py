@@ -247,65 +247,23 @@ plt.xticks(rotation=90)
 st.pyplot(fig)
     
 df1['date_crf'] =pd.to_datetime(df1['date_crf'] ).dt.strftime('%Y-%m-%d')
-df0=df1[df1['lassa_pcr']=='Positive']
-dfg= df0.groupby(['date_crf', 'siteregion_crf', 'lassa_pcr']).size().reset_index(name='Positive lassa')
+df0=df1[df1['malaria_rdt']=='Positive']
+dfg= df0.groupby(['date_crf', 'siteregion_crf', 'lass']).size().reset_index(name='Positive lassa')
 dfg['date_crf'] =pd.to_datetime(dfg['date_crf'] ).dt.strftime('%Y-%m-%d')
 st.write(dfg)
 state=dfg['siteregion_crf'].unique().tolist()
 date=dfg['date_crf'].unique().tolist()
 Date=st.selectbox('Which date',date, index=0)
 State=st.multiselect('Which state',state,dfg['siteregion_crf'].unique())
-dfstate=dfg[dfg['State of Residence'].isin(State)]
+dfstate=dfg[dfg['siteregion_crf'].isin(State)]
 fig=px.bar(dfstate, x="siteregion_crf", y="Positive lassa", color="siteregion_crf",animation_frame="date_crf", animation_group="siteregion_crf")
 #fig.layout.updatemenus[0].buttons[0].args[1]['frame']['duration']=30
 #fig.layout.updatemenus[0].buttons[0].args[1]['transition'['duration']]=5
 fig.update_layout(width=800)
 
-st.write(fig)
-
-# Multi-Select for Columns
-selected_columns = st.multiselect('Select Columns', df.columns)
-
-# Display Selected Columns
-st.write('Selected Columns:', selected_columns)
-
-df0=dff[dff['Lassa fever']=='Positive']
-dfg= df0.groupby(['Date of visit', 'State of Residence', 'Lassa fever']).size().reset_index(name='Positive lassa')
-fig = px.pie(dfg, names='State of Residence', values='Positive lassa', title='Pie Plot')
-st.plotly_chart(fig)
-
-# Filter DataFrame based on selected columns
-filtered_df = df[selected_columns]
-
-# Create Pie Plot
-if not filtered_df.empty:
-    fig = px.pie(filtered_df, names='Category', values='Value', title='Pie Plot')
-    st.plotly_chart(fig)
-else:
-    st.warning('Select at least one column to display the pie plot.')
-dfcat=dff.groupby(by = ['Lassa fever'] , as_index=False)['Age'].mean()
-with col1:
-  st.subheader("Category wise Age")
- # text =  ['Year:,.2f'].format(x) for x in dfcat,
-  fig=px.bar(dfcat, x = "Lassa fever", y = "Age", template='seaborn')
-  st.plotly_chart(fig, use_countainer_width=True, height=20)
-with col2:
-  st.subheader("State  wise Age")
-  fig=px.pie(dff, values='Age', names="State of Residence", hole=0.5)
-  fig.update_traces(text=dff['State of Residence'], textposition="outside")
-  st.plotly_chart(fig, use_countainer_width=True, height=20)
-dfs=df
-# Display the selected columns
-if selected_columns:
-    #st.subheader('Selected Columns:')
-    dfs=df[selected_columns]
-else:
-    st.info('Please select columns using the dropdown above.')
-    dfs=df
 
 
-
-select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',dfs.select_dtypes(include='object').columns)
+select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
 
 if select_catcol:
     st.write("Selected categorical column is : ", select_catcol[0])
@@ -323,7 +281,7 @@ else:
     st.info('Please select a categorical column using the dropdown above.')
 
 
-select_numcol=st.multiselect('Please select numerical column to make  a histogram plot:',dfs.select_dtypes(include='number').columns)
+select_numcol=st.multiselect('Please select numerical column to make  a histogram plot:',df.select_dtypes(include='number').columns)
 
 
 
