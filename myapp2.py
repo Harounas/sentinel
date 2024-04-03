@@ -15,8 +15,8 @@ from io import StringIO
 import seaborn as sns
 ssl._create_default_https_context = ssl._create_stdlib_context
 from datetime import datetime, timedelta
-st.write('hello here')
-url="https://docs.google.com/spreadsheets/d/1JIDg8pqO1Sn353-K8JkCCKZKEvqsytaMGiqBFT04f48/edit?usp=sharing"
+
+url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
 
 conn = st.connection("gsheets", type=GSheetsConnection)
 st.title("Data summary sentinel project")
@@ -105,7 +105,8 @@ with col2:
       date2=pd.to_datetime(st.date_input("End Date", Enddate))
 
 df=df[(df['date_crf']>=date1)&(df['date_crf']<=date2)].copy()
-
+df=df.dropna(subsets=['siteregion_crf'])
+df=df.dropna(subsets=['date_crf'])
 st.sidebar.header("Choose your filter : ")
 ##Create for State
 
@@ -218,8 +219,8 @@ ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
 
 ax.set_xlabel('Date')
 ax.set_ylabel('Value')
-ax.set_title('Plot through Time with Custom X-axis Ticks')
-plt.xticks(rotation=45)
+#ax.set_title('Plot through Time with Custom X-axis Ticks')
+plt.xticks(rotation=90)
 #ax.tight_layout()
 st.pyplot(fig)
     
