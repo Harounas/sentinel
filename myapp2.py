@@ -50,7 +50,7 @@ def main():
 
     # If a token is provided
     if token:
-        st.write("Token provided:", token)
+        #st.sidebar.header("Token provided:", token)
         data = {
     'token':token,
     'content': 'record',
@@ -75,7 +75,7 @@ def main():
         r = requests.post('https://redcap-acegid.org/api/',data=data)
 
         df = pd.read_csv(StringIO(r.text),  low_memory=False)
-        st.write(df.head())
+       # st.write(df.head())
     else:
         df=df0     
 
@@ -89,7 +89,8 @@ df=main()
        
 #df = conn.read(spreadsheet=url)
 df['date_crf'] = pd.to_datetime(df['date_crf'], errors='coerce', format='%Y-%m-%d')
-
+df=df.dropna(subset=['siteregion_crf'])
+df=df.dropna(subset=['date_crf'])
 # Filter DataFrame based on current date and time
 df = df[(df['date_crf']<=pd.to_datetime(datetime.now()))]
 df=df.replace({'Ondo':'OWO','Lagos':'IKORODU','Ebonyi':'ABAKALIKI','Edo':'IRRUA'})
@@ -105,8 +106,7 @@ with col2:
       date2=pd.to_datetime(st.date_input("End Date", Enddate))
 
 df=df[(df['date_crf']>=date1)&(df['date_crf']<=date2)].copy()
-df=df.dropna(subset=['siteregion_crf'])
-df=df.dropna(subset=['date_crf'])
+
 st.sidebar.header("Choose your filter : ")
 ##Create for State
 
@@ -121,40 +121,53 @@ dfsample=df[['siteregion_crf','bloodsample','urinesample',
 'nasosample',
 'salivasample',
 'oralsample']]
-
+samplecol=['siteregion_crf','bloodsample','urinesample',
+'nasosample',
+'salivasample',
+'oralsample']
+testcol=['siteregion_crf','hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']
 dftest=df[['siteregion_crf','hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']]
 dfpcr=df[['siteregion_crf','yellowfever_pcr','lassa_pcr','ebola_pcr','marburg_pcr','westnile_pcr','zika_pcr','cchf_pcr','riftvalley_pcr','dengue_pcr','ony_pcr','covid_pcr','mpox_pcr']]
+pcrcol=['siteregion_crf','yellowfever_pcr','lassa_pcr','ebola_pcr','marburg_pcr','westnile_pcr','zika_pcr','cchf_pcr','riftvalley_pcr','dengue_pcr','ony_pcr','covid_pcr','mpox_pcr']
 def weeksago(df):
   two_weeks_ago =  pd.to_datetime(Startdate - timedelta(weeks=2))
   sliced_df = sliced_df =df[(df['date_crf']<=date1)&(df['date_crf']>=two_weeks_ago)].copy()
   
   return sliced_df 
 def samplecollected(df):
-     dftest=dfsample.drop(columns=['siteregion_crf'])
-     missingfomrs = dftest[dftest.isna().all(axis=1)]
+     dfsample1=dfsample.drop(columns=['siteregion_crf'])
+     missingfomrs = dfsample1[dfsample1.isna().all(axis=1)]
      return missingfomrs
      
 def sampletest(df):
-     dftest=dftest.drop(columns=['siteregion_crf'])
-     missingfomrs = dftest[dftest.isna().all(axis=1)]
+     dftest1=dftest.drop(columns=['siteregion_crf'])
+     missingfomrs = dftest1[dftest1.isna().all(axis=1)]
      return missingfomrs
-def sampletest(df):
-     dfpcr=dfpcr.drop(columns=['siteregion_crf'])
-     missingfomrs = dfpcr[dfpcr.isna().all(axis=1)]
+def samplepcr(df):
+     dfpcr1=dfpcr.drop(columns=['siteregion_crf'])
+     missingfomrs = dfpcr1[dfpcr1.isna().all(axis=1)]
      return missingfomrs          
 
 # Calculate the date two weeks ago
 two_weeks_ago = pd.to_datetime(date1 - timedelta(weeks=2))
+dfsample1=samplecollected(df)
+dftest1=sampletest(df)
+dfpcr1=samplepcr(df)
 
 sliced_df =df[(df['date_crf']>=date1)&(df['date_crf']<=two_weeks_ago)].copy()
 data1 = {' ':['Patient enrolled','Sample collected','RDTs run','PCRs run'],
-        'Last two weeks': [len(df),"{} ({:.2f}%)".format(len(df)*5,(((len(df)*5-dfsample.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*5,(((len(df)*5-dftest.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*12,(((len(df)*12-dfpcr.isnull().sum().sum())/(len(df)*12))*100))]
+        'Last two weeks': [len(df),"{} ({:.2f}%)".format(len(df)*5,(((len(df)*5-dfsample1.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*5,(((len(df)*5-dftest1.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*12,(((len(df)*12-dfpcr1.isnull().sum().sum())/(len(df)*12))*100))]
     
       #  'previous two weeks': [len(weeksago(df)),"{} ({:.2f}%)".format(len(weeksago(df))*5,(((len(weeksago(df))-len(samplecollected(weeksago(df))))/len(weeksago(df)))*100))]
         }
 #"{} {.2f%} ".format(len(df),((len(dfsample)*5-samplecollected(df)*5/len(df)*5)*100)),((len(weeksago(df))*5-samplecollected(weeksago(dfsample))*5/len(weeksago(dfsample))*5)*100)
 
     # Create DataFrame
+data11 = {' ':['Patient enrolled','Sample collected','RDTs run','PCRs run'],
+        'Last two weeks': [len(df),"{} ({:.2f}%)".format(len(df)*5,((len(df)-len(dfsample1))/len(df))*100),"{} ({:.2f}%)".format(len(df)*5,((len(df)-len(dftest1))/(len(df)))*100),"{} ({:.2f}%)".format(len(df)*12,((len(dfpcr1)-len(dfpcr1))/len(df))*100)]
+    
+      #  'previous two weeks': [len(weeksago(df)),"{} ({:.2f}%)".format(len(weeksago(df))*5,(((len(weeksago(df))-len(samplecollected(weeksago(df))))/len(weeksago(df)))*100))]
+        }
 dataframe1 = pd.DataFrame(data1)
 
     # Display the DataFrame as a table
@@ -181,19 +194,28 @@ with col1:
 with col2:
     st.dataframe(dataframe2) 
   
-
 for state in df['siteregion_crf'].unique():
    dfs=df[df['siteregion_crf']==state]  
-   dfsample=dfsample[dfsample['siteregion_crf']==state]
-   dftest=dftest[dftest['siteregion_crf']==state]
+   #dfsample=dfsample[dfsample['siteregion_crf']==state]
+   #dftest=dftest[dftest['siteregion_crf']==state]
+   #st.write(dfsample)
+   dfsample=dfs[samplecol]
+   dfsample=dfs[samplecol]
+   dftest=dfs[testcol]
+   dfpcr=dfs[pcrcol]
+   dftest=dftest.drop(columns=['siteregion_crf'])
+   missingformt = dftest[dftest.isna().all(axis=1)]
+   dfpcr=dfpcr.drop(columns=['siteregion_crf'])
+   missingformp = dfpcr[dfpcr.isna().all(axis=1)]
+   dfsample=dfsample.drop(columns=['siteregion_crf'])
+   missingforms = dfsample[dfsample.isna().all(axis=1)]
 
-   dfpcr=dfpcr[dfpcr['siteregion_crf']==state]
-   data = {' ':['Patient enrolled','Sample collected','RDTs run','PCRs run'],
-        'Last two weeks': [len(dfs),"{} ({:.2f}%)".format(len(dfs)*5,(((len(dfs)*5-dfsample.isnull().sum().sum())/(len(dfs)*5))*100)),"{} ({:.2f}%)".format(len(dfs)*5,(((len(dfs)*5-dftest.isnull().sum().sum())/(len(dfs)*5))*100)),"{} ({:.2f}%)".format(len(dfs)*12,(((len(dfs)*12-dfpcr.isnull().sum().sum())/(len(dfs)*12))*100))]}
+   data = {' ':['Patient enrolled','Missing sample collection forms',' Missing RDTs forms','Missing PCRs forms'],
+        'Last two weeks': [len(dfs),"{} ({:.2f}%)".format( missingforms.isna().sum().sum(),(( missingforms.isna().sum().sum()/(len(dfs)*5))*100)),"{} ({:.2f}%)".format( missingformt.isna().sum().sum(),(( missingformt.isna().sum().sum()/(len(dfs)*5))*100)),"{} ({:.2f}%)".format( missingformp.isna().sum().sum(),(( missingformp.isna().sum().sum()/(len(dfs)*12))*100))]}
    dataframe = pd.DataFrame(data) 
    st.write(f"## {state}")
-   st.dataframe(dataframe)
-      
+   st.dataframe(dataframe)    
+
 dff= df1.groupby(['date_crf', 'siteregion_crf']).size().reset_index(name='Count')
 #dff['Region of site']=dff['Region of site'].replace({'Ikorodu':'IKORODU','Abakaliki ':'Abakaliki','Abakaliki ':'Abakalik','Ebonyi ':'Ebonyi'})
 
