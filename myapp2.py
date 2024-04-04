@@ -15,6 +15,8 @@ from io import StringIO
 import seaborn as sns
 ssl._create_default_https_context = ssl._create_stdlib_context
 from datetime import datetime, timedelta
+from ipyvizzu import Chart, Data, Config
+from st_vizzu import *
 
 url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
 
@@ -216,7 +218,7 @@ for state in df['siteregion_crf'].unique():
    st.write(f"## {state}")
    st.dataframe(dataframe)    
 
-dff= df1.groupby(['date_crf', 'siteregion_crf']).size().reset_index(name='Count')
+dff= df.groupby(['date_crf', 'siteregion_crf']).size().reset_index(name='Count')
 #dff['Region of site']=dff['Region of site'].replace({'Ikorodu':'IKORODU','Abakaliki ':'Abakaliki','Abakaliki ':'Abakalik','Ebonyi ':'Ebonyi'})
 
 #dff= dff[(dff['LGA']=="IKORODU") | (dff['LGA'] == 'OWO') |(dff['LGA'] == 'Abakaliki')|(dff['LGA'] == 'Ebonyi')]
@@ -245,23 +247,60 @@ ax.set_ylabel('Value')
 plt.xticks(rotation=90)
 #ax.tight_layout()
 st.pyplot(fig)
+
+dff= df.groupby(['hiv_rdt', 'siteregion_crf']).size().reset_index(name='Count')
+st.write(dff)
+dfff=pd.merge(dff,dff.groupby(['siteregion_crf']).sum().reset_index(),on="siteregion_crf")
+st.write(dff)
+
+
+# Initializing the chart
+chart = Chart(width="640px", height="360px", display="manual")
+
+
+data = Data()
+data.add_df(df)
+
+chart = Chart(width="640px", height="360px")
+
+chart.animate(data)
+
+obj = create_vizzu_obj(dff)
+
+# Preset plot usage. Preset plots works directly with DataFrames.
+bar_obj = bar_chart(df,
+            x = "hiv_rdt", 
+            y = "Count",
+            title= "1.Using preset plot function `bar_chart()`"
+            )
+
+# Animate with defined arguments 
+anim_obj = beta_vizzu_animate( bar_obj,
+    x = "siteregion_crf",
+    y =  ["Count", "hiv_rdt"],
+    title = "Animate with beta_vizzu_animate () function",
+    label= "Count",
+    color="",
+    legend="color",
+    sort="byValue",
+    reverse=True,
+    align="center",
+    split=False,
+)
+
+# Animate with general dict based arguments 
+_dict = {"size": {"set": "Popularity"}, 
+    "geometry": "circle",
+    "coordSystem": "polar",
+    "title": "Animate with vizzu_animate () function",
+    }
+anim_obj2 = vizzu_animate(anim_obj,_dict)
+
+# Visualize within Streamlit
+with st.container(): # Maintaining the aspect ratio
+    st.button("Animate")
+    vizzu_plot(anim_obj2)
     
-df1['date_crf'] =pd.to_datetime(df1['date_crf'] ).dt.strftime('%Y-%m-%d')
-df0=df1[df1['malaria_rdt']=='Positive']
-dfg= df0.groupby(['date_crf', 'siteregion_crf', 'malaria_rdt']).size().reset_index(name='Positive lassa')
-dfg['date_crf'] =pd.to_datetime(dfg['date_crf'] ).dt.strftime('%Y-%m-%d')
-st.write(dfg)
-state=dfg['siteregion_crf'].unique().tolist()
-date=dfg['date_crf'].unique().tolist()
-Date=st.selectbox('Which date',date, index=0)
-State=st.multiselect('Which state',state,dfg['siteregion_crf'].unique())
-dfstate=dfg[dfg['siteregion_crf'].isin(State)]
-fig=px.bar(dfstate, x="siteregion_crf", y="Positive lassa", color="siteregion_crf",animation_frame="date_crf", animation_group="siteregion_crf")
-#fig.layout.updatemenus[0].buttons[0].args[1]['frame']['duration']=30
-#fig.layout.updatemenus[0].buttons[0].args[1]['transition'['duration']]=5
-fig.update_layout(width=800)
-
-
 
 select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
 
@@ -308,8 +347,8 @@ else:
     st.info('Please select a numerical column using the dropdown above.')
 
 
-select_catcol=st.multiselect('Please select categorical column to make  a box plot:',dfs.select_dtypes(include='object').columns)
-select_numcol=st.multiselect('Please select categorical column to make  a box plot:',dfs.select_dtypes(include='number').columns)
+select_catcol=st.multiselect('Please select categorical column to make  a box plot:',df.select_dtypes(include='object').columns)
+select_numcol=st.multiselect('Please select categorical column to make  a box plot:',df.select_dtypes(include='number').columns)
 
 def t_test(sample1, sample2):
     t_statistic, p_value = stats.ttest_ind(sample1, sample2)
@@ -320,21 +359,33 @@ def mann_whitney_test(sample1, sample2):
     return u_statistic, p_value
 
 if select_catcol and select_numcol:
-   dfs[select_numcol[0]]=dfs[select_numcol[0]].fillna(0)
-   st.write("Selected categorical column is : ", select_catcol[0], "Selected numerical column is : ",select_numcol[0] )
+   cat=st.sidebar.multiselect("Choose two categories",   df[select_catcol[0]].unique())
+   if not cat:
+       df1=df.copy()
+       df1[select_numcol[0]]=df1[select_numcol[0]].fillna(df1[select_numcol[0]].mean())
+       sample1=df1.loc[df1[select_catcol[0]]==df1[select_catcol[0]].value_counts().index.tolist()[0]][select_numcol[0]]
+       sample2=df1.loc[df1[select_catcol[0]]==df1[select_catcol[0]].value_counts().index.tolist()[1]][select_numcol[0]]
+   else:
+      df1=df[df[select_catcol[0]].isin(cat)] 
+      df1[select_numcol[0]]=df1[select_numcol[0]].fillna(df1[select_numcol[0]].mean())
+      sample1=df1.loc[df1[select_catcol[0]]==cat[0]][select_numcol[0]]
+      sample2=df1.loc[df1[select_catcol[0]]==cat[1]][select_numcol[0]]
+   
+   st.write("Selected categorical column is : ", select_catcol[0], "" " and Selected numerical column is : ",select_numcol[0] )
    fig, ax = plt.subplots()
-   df.boxplot(by=select_catcol[0], column=select_numcol[0], ax=ax)
+   df1.boxplot(by=select_catcol[0], column=select_numcol[0], ax=ax)
    plt.title(' ')
    plt.xlabel(f'{select_catcol[0]}')
    plt.ylabel(f'{select_numcol[0]}')
 
 # Display the plot in Streamlit app
    st.pyplot(fig)
-   st.write(dfs.loc[dfs[select_catcol[0]]==dfs[select_catcol[0]].value_counts().index.tolist()[0]]['Sex'])
+   #st.write(dfs.loc[dfs[select_catcol[0]]==dfs[select_catcol[0]].value_counts().index.tolist()[0]]['Sex'])
    
    # Perform Mann-Whitney U test
-   sample1=dfs.loc[dfs[select_catcol[0]]==dfs[select_catcol[0]].value_counts().index.tolist()[0]][select_numcol[0]]
-   sample2=dfs.loc[dfs[select_catcol[0]]==dfs[select_catcol[0]].value_counts().index.tolist()[1]][select_numcol[0]]
+   
+   #sample1=df1.loc[df1[select_catcol[0]]==df1[select_catcol[0]].value_counts().index.tolist()[0]][select_numcol[0]]
+  # sample2=df1.loc[df1[select_catcol[0]]==df1[select_catcol[0]].value_counts().index.tolist()[1]][select_numcol[0]]
    # Perform t-test
    t_statistic, t_p_value = t_test(sample1, sample2)
 
@@ -353,104 +404,15 @@ if select_catcol and select_numcol:
 
 
 
-countdfs=dfs['Date of visit'].value_counts().reset_index()
-countdfs.columns=['Date of visit','Count']
-countdfs['Date of visit'] = pd.to_datetime(countdfs['Date of visit'], errors='coerce', format='%Y-%m-%d')
-#countdfs['Date of visit'] = countdfs['Date of visit'].dt.strftime('%Y-%m-%d')
 
-startdate = pd.to_datetime("'2021-01-06'").date()
-st.write(countdfs['Date of visit'].values)  
 
-df = pd.DataFrame({'date':countdfs['Date of visit'].values ,'Count':countdfs['Count'].values}, index=countdfs['Date of visit'].values)
 
-st.write(df)
 
-# Sample DataFrame with a datetime column and a group column indicating case or control
-df = pd.DataFrame({
-    'datetime_column':dfs['Date of visit'],
-    'group': dfs['Result 1'],
-    'data': dfs['Age']
-})
 
-# Streamlit app
-df= df.sort_values(by=['datetime_column'])
 
-st.title('Data Plot for Selected Datetime Range')
 
-# Set default start and end dates to the minimum and maximum dates in the DataFrame
-start_date = st.date_input("Select start date", min_value=df['datetime_column'].min().date(), max_value=df['datetime_column'].max().date(), value=df['datetime_column'].min().date())
-end_date = st.date_input("Select end date", min_value=df['datetime_column'].min().date(), max_value=df['datetime_column'].max().date(), value=df['datetime_column'].max().date())
 
-# Convert to datetime objects
-start_date = pd.to_datetime(start_date)
-end_date = pd.to_datetime(end_date)
 
-# Filter the DataFrame based on the selected datetime range
-filtered_df = df[(df['datetime_column'].dt.date >= start_date.date()) & (df['datetime_column'].dt.date <= end_date.date())]
 
-# Plot the filtered data for each group separately
-plt.figure(figsize=(10, 6))
-for group_name, group_data in filtered_df.groupby('group'):
-    plt.plot(group_data['datetime_column'], group_data['data'], label=group_name)
 
-plt.title('Data Plot for Selected Datetime Range')
-plt.xlabel('Datetime')
-plt.ylabel('Data')
-plt.xticks(rotation=45)
-plt.legend()
-plt.grid(True)
 
-# Display plot in Streamlit app
-st.pyplot(plt)
-
-# Sample DataFrame with a datetime column
-df = pd.DataFrame({
-    'datetime_column': countdfs['Date of visit'].values,
-    'data':countdfs['Count'].values})
-st.write(df)
-# Streamlit app
-st.title('Data Plot for Selected Datetime Range')
-
-# Set default start and end dates to the minimum and maximum dates in the DataFrame
-start_date = st.date_input("Select start date", min_value=df['datetime_column'].min().date(), value=df['datetime_column'].min().date())
-end_date = st.date_input("Select end date", min_value=df['datetime_column'].min().date(), value=df['datetime_column'].max().date())
-
-# Convert to datetime objects
-start_date = pd.to_datetime(start_date)
-end_date = pd.to_datetime(end_date)
-
-# Filter the DataFrame based on the selected datetime range
-filtered_df = df[(df['datetime_column'].dt.date >= start_date.date()) & (df['datetime_column'].dt.date <= end_date.date())]
-
-# Plot the filtered data
-plt.figure(figsize=(10, 6))
-plt.plot(filtered_df['datetime_column'], filtered_df['data'])
-plt.title('Data Plot for Selected Datetime Range')
-plt.xlabel('Datetime')
-plt.ylabel('Data')
-plt.xticks(rotation=45)
-plt.grid(True)
-
-# Sample DataFrame with temporal data
-data = {
-    'Date': pd.date_range(start='2022-01-01', periods=100),
-    'Value': [-1, 2, -3, 4, -5, 6, -7, 8, -9, 10] * 10  # Sample data with positive and negative values
-}
-df = pd.DataFrame(data)
-
-# Streamlit app title
-st.title('Average of Positive Values Over Time')
-
-# Calculate average of positive values over time
-positive_values = df[df['Value'] > 0]
-average_positive = positive_values.groupby(positive_values['Date'].dt.month)['Value'].mean()
-
-# Plot the average of positive values over time
-plt.figure(figsize=(10, 6))
-plt.plot(average_positive.index, average_positive.values, marker='o')
-plt.title('Average of Positive Values Over Time')
-plt.xlabel('Month')
-plt.ylabel('Average of Positive Values')
-plt.grid(True)
-# Display plot in Streamlit app
-st.pyplot(plt)
