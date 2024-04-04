@@ -248,7 +248,7 @@ st.pyplot(fig)
     
 df1['date_crf'] =pd.to_datetime(df1['date_crf'] ).dt.strftime('%Y-%m-%d')
 df0=df1[df1['malaria_rdt']=='Positive']
-dfg= df0.groupby(['date_crf', 'siteregion_crf', 'lass']).size().reset_index(name='Positive lassa')
+dfg= df0.groupby(['date_crf', 'siteregion_crf', 'malaria_rdt']).size().reset_index(name='Positive lassa')
 dfg['date_crf'] =pd.to_datetime(dfg['date_crf'] ).dt.strftime('%Y-%m-%d')
 st.write(dfg)
 state=dfg['siteregion_crf'].unique().tolist()
@@ -269,7 +269,7 @@ if select_catcol:
     st.write("Selected categorical column is : ", select_catcol[0])
  
    # selected_columns = st.multiselect("select column", select_col)
-    s = dfs[select_catcol[0]].str.strip().value_counts()
+    s = df[select_catcol[0]].str.strip().value_counts()
     count_df = pd.DataFrame({f'{select_catcol[0]}': s.index, 'Count': s.values})
     st.write(count_df)
     trace = go.Bar(x=s.index,y=s.values,showlegend = False, text=s.values)
@@ -292,8 +292,8 @@ select_numcol=st.multiselect('Please select numerical column to make  a histogra
 if select_numcol:
    st.write("Selected numerical column is : ", select_numcol[0])
    fig, ax = plt.subplots()
-   q1 = dfs[select_numcol[0]].quantile(0.25)
-   q3 = dfs[select_numcol[0]].quantile(0.75)
+   q1 = df[select_numcol[0]].quantile(0.25)
+   q3 = df[select_numcol[0]].quantile(0.75)
    iqr = q3 - q1
    bin_width = (2 * iqr) / (len(dfs[select_numcol[0]]) ** (1 / 3))
    bin_count = int(np.ceil((dfs[select_numcol[0]].max() - dfs[select_numcol[0]].min()) / bin_width))
