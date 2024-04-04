@@ -15,8 +15,6 @@ from io import StringIO
 import seaborn as sns
 ssl._create_default_https_context = ssl._create_stdlib_context
 from datetime import datetime, timedelta
-from ipyvizzu import Chart, Data, Config
-from st_vizzu import *
 
 url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
 
