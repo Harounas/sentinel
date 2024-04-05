@@ -15,6 +15,10 @@ from io import StringIO
 import seaborn as sns
 ssl._create_default_https_context = ssl._create_stdlib_context
 from datetime import datetime, timedelta
+from ipyvizzu import Chart, Data, Config
+from st_vizzu import *
+from scipy.stats import chi2_contingency, fisher_exact
+from scipy.stats import zscore
 
 url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
 
@@ -247,10 +251,46 @@ plt.xticks(rotation=90)
 st.pyplot(fig)
 
 dff= df.groupby(['hiv_rdt', 'siteregion_crf']).size().reset_index(name='Count')
-st.write(dff)
-dfff=pd.merge(dff,dff.groupby(['siteregion_crf']).sum().reset_index(),on="siteregion_crf")
-st.write(dff)
 
+dfff=pd.merge(dff,dff.groupby(['siteregion_crf']).sum().reset_index(),on="siteregion_crf")
+
+
+dfc=df[(df['participantid_crf']!=np.nan)&(df['participantid_rdt']!=np.nan)&(df['participantid_rdt']!=df['participantid_crf'])&(df['age_rdt']!=df['age_crf'])|(df['sex_rdt']!=df['sex_crf'])]
+dfc=dfc.dropna(subset=['participantid_crf','participantid_rdt'])
+st.write(f"## Mismatch check between forms: number of mismach is {len(dfc)} ")
+st.write(dfc[['participantid_crf','participantid_rdt','age_rdt','age_crf','sex_crf','sex_rdt' ,'siteregion_crf']])     
+        
+select_out=st.multiselect('Please select a to check outliers:',df.select_dtypes(include='number').columns)
+# Function to detect outliers using z-score
+def detect_outliers_zscore(data):
+    # Calculate z-score for each value in the dataframe
+    z_scores = np.abs(zscore(data))
+    # Threshold for considering a value as an outlier (e.g., z-score > 3)
+    threshold = 3
+    # Create a boolean mask indicating outliers
+    outlier_mask = (z_scores > threshold)
+    return outlier_mask
+
+# Main app
+if select_out:
+    data =df[select_out]
+
+
+
+    # Checkbox to show outliers
+    show_outliers = st.checkbox('Show Outliers')
+
+    # Detect outliers using z-score
+    outliers = detect_outliers_zscore(data)
+    st.write(outliers)
+    if len(outliers)!=0:
+        # Show outliers in the dataframe
+        st.write('Outliers:', data[outliers.any(axis=1)])
+    else:
+        st.write('No outliers detected.')
+        
+           
+        
 select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
 
 if select_catcol:
@@ -308,7 +348,7 @@ def mann_whitney_test(sample1, sample2):
     return u_statistic, p_value
 
 if select_catcol and select_numcol:
-   cat=st.sidebar.multiselect("Choose two categories",   df[select_catcol[0]].unique())
+   cat=st.multiselect("Choose two categories",   df[select_catcol[0]].unique())
    if not cat:
        df1=df.copy()
        df1[select_numcol[0]]=df1[select_numcol[0]].fillna(df1[select_numcol[0]].mean())
@@ -342,7 +382,7 @@ if select_catcol and select_numcol:
    u_statistic, u_p_value = mann_whitney_test(sample1, sample2)
 
     # Display results
-   st.write("### Results")
+   st.write("### Statistical test")
    st.write("#### Independent Samples t-test")
    st.write(f"T-Statistic: {t_statistic}")
    st.write(f"P-Value: {t_p_value}")
@@ -352,7 +392,47 @@ if select_catcol and select_numcol:
    st.write(f"P-Value: {u_p_value}")
 
 
+# Function to perform chi-square test
+def chi_square_test(data1,data2):
+    data=pd.crosstab(data1, data2)
+    chi2, p, dof, expected = chi2_contingency(data)
+    return chi2, p
 
+# Function to perform Fisher's exact test
+def fishers_exact_test(data):
+    oddsratio, p = fisher_exact(data)
+    return oddsratio, p
+select_col11=st.multiselect('Please select a first categorical column for statisticala analysis',df.select_dtypes(include='object').columns)
+select_col22=st.multiselect('Please select a second categorical column for statisticala analysis',df.select_dtypes(include='object').columns)
+# Main app
+if select_col11 and select_col22:
+   cat11=st.multiselect("Choose two categories for the first categorical variable",   df[select_col11[0]].unique())
+   cat22=st.multiselect("Choose two categories for the first categorical variable",   df[select_col22[0]].unique())
+   if not cat11 and not cat22:
+       df1=df.copy()
+ 
+   elif cat11 and not cat22:
+     df1=df[df[select_col11[0]].isin(cat11)] 
+  
+   else:
+     df1=df[df[select_col22[0]].isin(cat22)]  
+   
+    # Filter data to selected columns
+ 
+   selected_data = df1[[select_col11[0], select_col22[0]]].dropna()
+   
+    # Perform chi-square test
+   st.subheader('## Chi-Square Test')
+   chi2, p = chi_square_test(selected_data[select_col11[0]], selected_data[select_col22[0]])
+   st.write('Chi-Square Statistic:', chi2)
+   st.write('P-value:', p)
+   
+    # Perform Fisher's exact test
+   st.subheader("## Fisher's Exact Test")
+   contingency_table = pd.crosstab(selected_data[select_col11[0]], selected_data[select_col22[0]])
+   oddsratio, p = fishers_exact_test(contingency_table)
+   st.write('Odds Ratio:', oddsratio)
+   st.write('P-value:', p)
 
 
 
