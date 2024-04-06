@@ -190,7 +190,7 @@ with col1:
 with col2:
     st.dataframe(dataframe2) 
   
-for i,state in enumerate(df['siteregion_crf'].unique():)
+for i,state in enumerate(df['siteregion_crf'].unique()):
    dfs=df[df['siteregion_crf']==state]  
    #dfsample=dfsample[dfsample['siteregion_crf']==state]
    #dftest=dftest[dftest['siteregion_crf']==state]
