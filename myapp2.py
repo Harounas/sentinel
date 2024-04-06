@@ -198,7 +198,7 @@ with col1:
 with col2:
     st.dataframe(dataframe2) 
   
-for state in df['siteregion_crf'].unique():
+for i,state in enumerate(df['siteregion_crf'].unique():)
    dfs=df[df['siteregion_crf']==state]  
    #dfsample=dfsample[dfsample['siteregion_crf']==state]
    #dftest=dftest[dftest['siteregion_crf']==state]
@@ -216,7 +216,16 @@ for state in df['siteregion_crf'].unique():
 
    data = {' ':['Patient enrolled','Missing sample collection forms',' Missing RDTs forms','Missing PCRs forms'],
         'Last two weeks': [len(dfs),"{} ({:.2f}%)".format( missingforms.isna().sum().sum(),(( missingforms.isna().sum().sum()/(len(dfs)*5))*100)),"{} ({:.2f}%)".format( missingformt.isna().sum().sum(),(( missingformt.isna().sum().sum()/(len(dfs)*5))*100)),"{} ({:.2f}%)".format( missingformp.isna().sum().sum(),(( missingformp.isna().sum().sum()/(len(dfs)*12))*100))]}
-   dataframes[f"data{state}"]  = pd.DataFrame(data) 
+   dataframe = pd.DataFrame(data)
+   col1, col2=st.columns((2))
+   with col1:
+    if (i==0 or i==1):
+       st.dataframe(dataframe1) 
+ 
+   with col2:
+    if (i==2 or i==3):
+      st.dataframe(dataframe) 
+   
    st.write(f"dataframe {state}")
    st.write(f"## {state}")
    st.dataframe(dataframe)    
