@@ -216,7 +216,7 @@ for state in df['siteregion_crf'].unique():
 
    data = {' ':['Patient enrolled','Missing sample collection forms',' Missing RDTs forms','Missing PCRs forms'],
         'Last two weeks': [len(dfs),"{} ({:.2f}%)".format( missingforms.isna().sum().sum(),(( missingforms.isna().sum().sum()/(len(dfs)*5))*100)),"{} ({:.2f}%)".format( missingformt.isna().sum().sum(),(( missingformt.isna().sum().sum()/(len(dfs)*5))*100)),"{} ({:.2f}%)".format( missingformp.isna().sum().sum(),(( missingformp.isna().sum().sum()/(len(dfs)*12))*100))]}
-   dataframe = pd.DataFrame(data) 
+   dataframes[f"data{state}"]  = pd.DataFrame(data) 
    st.write(f"dataframe {state}")
    st.write(f"## {state}")
    st.dataframe(dataframe)    
