@@ -10,6 +10,58 @@ import numpy as np
 from scipy import stats
 from matplotlib.dates import DateFormatter
 import ssl
+   
+url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
+
+conn = st.connection("gsheets", type=GSheetsConnection)
+st.title("Data summary sentinel project")
+st.markdown("---")
+
+conn = st.connection("gsheets", type=GSheetsConnection)
+
+st.markdown("---")
+@st.cache_data
+def load_data(datapath):
+    dataset = conn.read(spreadsheet=datapath)
+    return dataset
+
+df0 = load_data(url)
+def main():
+    st.sidebar.title("Please  upload your own file  or Token")
+    
+    # File uploader widget
+    uploaded_file =  st.sidebar.file_uploader("Upload a file", type=["txt", "csv", "xlsx"])
+
+    # If a file is uploaded
+    if uploaded_file is not None:
+        st.write("File uploaded successfully!")
+        st.write("File contents:")
+        # Read and display file contents
+        df = uploaded_file.read()
+        st.write(df)
+    
+    # Text input widget for token
+    token = st.sidebar.text_input("Input a token")
+
+    # If a token is provided
+    if token:
+        #st.sidebar.header("Token provided:", token)
+        data = {
+    'token':token,
+    'content': 'record',
+    'action': 'export',
+    'format': 'csv',
+    'type': 'flat',
+    'csvDelimiter': '',
+    'fields[0]': 'participantid_site',
+    'forms[0]': 'case_report_form',
+   'forms[1]': 'sample_collection_form',
+    'forms[2]': 'rdt_laboratory_report_form',
+   'forms[3]': 'pcr_laboratory_report_form',
+    'forms[4]': 'urinalysis_laboratory_report_form',
+    'forms[5]': 'malaria_laboratory_report_form',
+    'rawOrLabel': 'label',
+    'rawOrLabelHeaders': 'raw',
     'exportCheckboxLabel': 'false',
     'exportSurveyFields': 'false',
     'exportDataAccessGroups': 'false',
@@ -26,6 +78,7 @@ import ssl
   
   
 df=main() 
+
 
 
 
