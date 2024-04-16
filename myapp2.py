@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
-import dateutil.parser as parser  
+import dateutil.parser as parser
 import altair as alt
 import plotly.express as px
 import plotly.graph_objs as go
@@ -10,7 +10,16 @@ import numpy as np
 from scipy import stats
 from matplotlib.dates import DateFormatter
 import ssl
-   
+import requests
+from io import StringIO
+import seaborn as sns
+ssl._create_default_https_context = ssl._create_stdlib_context
+from datetime import datetime, timedelta
+#from ipyvizzu import Chart, Data, Config
+#from st_vizzu import *
+from scipy.stats import chi2_contingency, fisher_exact
+from scipy.stats import zscore
+
 url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
 
 conn = st.connection("gsheets", type=GSheetsConnection)
@@ -68,6 +77,7 @@ def main():
     'returnFormat': 'csv'
 }
         r = requests.post('https://redcap-acegid.org/api/',data=data)
+
         df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
     else:
@@ -77,7 +87,6 @@ def main():
   
   
 df=main() 
-
 
 
 
@@ -189,7 +198,7 @@ with col1:
 with col2:
     st.dataframe(dataframe2) 
   
-for i,state in enumerate(df['siteregion_crf'].unique()):
+for state in df['siteregion_crf'].unique():
    dfs=df[df['siteregion_crf']==state]  
    #dfsample=dfsample[dfsample['siteregion_crf']==state]
    #dftest=dftest[dftest['siteregion_crf']==state]
@@ -207,17 +216,7 @@ for i,state in enumerate(df['siteregion_crf'].unique()):
 
    data = {' ':['Patient enrolled','Missing sample collection forms',' Missing RDTs forms','Missing PCRs forms'],
         'Last two weeks': [len(dfs),"{} ({:.2f}%)".format( missingforms.isna().sum().sum(),(( missingforms.isna().sum().sum()/(len(dfs)*5))*100)),"{} ({:.2f}%)".format( missingformt.isna().sum().sum(),(( missingformt.isna().sum().sum()/(len(dfs)*5))*100)),"{} ({:.2f}%)".format( missingformp.isna().sum().sum(),(( missingformp.isna().sum().sum()/(len(dfs)*12))*100))]}
-   dataframe = pd.DataFrame(data)
-   col1, col2=st.columns((2))
-   with col1:
-    if (i==0 or i==1):
-       st.dataframe(dataframe) 
- 
-   with col2:
-    if (i==2 or i==3):
-      st.dataframe(dataframe) 
-   
-   st.write(f"dataframe {state}")
+   dataframe = pd.DataFrame(data) 
    st.write(f"## {state}")
    st.dataframe(dataframe)    
 
@@ -242,8 +241,8 @@ ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
 #plt.gca().spines['left'].set_visible(False)
 #monthly_ticks = pd.date_range(start=dff['Date of visit (dd/mm/yyyy)'].iloc[0], end=dff['Date of visit (dd/mm/yyyy)'].iloc[-1],freq='d')  # Monthly intervals
 #plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
-ax.tick_params(axis='x', labelsize=12)
 
+ax.tick_params(axis='x', labelsize=12)
 ax.set_xlabel('Date')
 ax.set_ylabel('Value')
 #ax.set_title('Plot through Time with Custom X-axis Ticks')
