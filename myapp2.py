@@ -68,7 +68,6 @@ def main():
     'returnFormat': 'csv'
 }
         r = requests.post('https://redcap-acegid.org/api/',data=data)
-
         df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
     else:
