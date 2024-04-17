@@ -160,7 +160,7 @@ dfpcr1=samplepcr(df)
 
 sliced_df =df[(df['date_crf']>=date1)&(df['date_crf']<=two_weeks_ago)].copy()
 data1 = {' ':['Patient enrolled','Sample collected','RDTs run','PCRs run'],
-        'Last two weeks': [len(df),"{} ({:.2f}%)".format(len(df)*5,(((len(df)*5-dfsample1.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*5,(((len(df)*5-dftest1.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*12,(((len(df)*12-dfpcr1.isnull().sum().sum())/(len(df)*12))*100))]
+        'Last two weeks': [len(df),"{} ({:.2f}%)".format(len(df)*5-dfsample1.isnull().sum().sum(),(((len(df)*5-dfsample1.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*5-dftest1.isnull().sum().sum(),(((len(df)*5-dftest1.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*12-dfpcr1.isnull().sum().sum(),(((len(df)*12-dfpcr1.isnull().sum().sum())/(len(df)*12))*100))]
     
       #  'previous two weeks': [len(weeksago(df)),"{} ({:.2f}%)".format(len(weeksago(df))*5,(((len(weeksago(df))-len(samplecollected(weeksago(df))))/len(weeksago(df)))*100))]
         }
@@ -168,7 +168,7 @@ data1 = {' ':['Patient enrolled','Sample collected','RDTs run','PCRs run'],
 
     # Create DataFrame
 data11 = {' ':['Patient enrolled','Sample collected','RDTs run','PCRs run'],
-        'Last two weeks': [len(df),"{} ({:.2f}%)".format(len(df)*5,((len(df)-len(dfsample1))/len(df))*100),"{} ({:.2f}%)".format(len(df)*5,((len(df)-len(dftest1))/(len(df)))*100),"{} ({:.2f}%)".format(len(df)*12,((len(dfpcr1)-len(dfpcr1))/len(df))*100)]
+        'Last two weeks': [len(df),"{} ({:.2f}%)".format(5*(len(df)-len(dfsample1)),((len(df)-len(dfsample1))/len(df))*100),"{} ({:.2f}%)".format(len(df)*5-5*len(dftest1),((len(df)-len(dftest1))/(len(df)))*100),"{} ({:.2f}%)".format(len(df)*12,((len(dfpcr1)-len(dfpcr1))/len(df))*100)]
     
       #  'previous two weeks': [len(weeksago(df)),"{} ({:.2f}%)".format(len(weeksago(df))*5,(((len(weeksago(df))-len(samplecollected(weeksago(df))))/len(weeksago(df)))*100))]
         }
