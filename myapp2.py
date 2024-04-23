@@ -195,7 +195,7 @@ dataframe3 = pd.DataFrame(data3)
 #st.dataframe(dataframe2) 
 st.write("## Overall summary")
 col1=st.columns((1))
-col2,col3=st.columns((3))
+col2,col3=st.columns((2))
 with col1:
     st.dataframe(dataframe1) 
  
