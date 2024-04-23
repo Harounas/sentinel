@@ -199,8 +199,10 @@ col2,col3=st.columns((2))
  
  
 with col2:
+    st.write("## Test summary")
     st.dataframe(dataframe2)
 with col3:
+    st.write("## PCR summary")
     st.dataframe(dataframe3) 
   
 for state in df['siteregion_crf'].unique():
