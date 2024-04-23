@@ -183,20 +183,26 @@ data2 = {' ':['HIV','Malaria','Hepatitis B','Hepatitiis C','Syphilis'],
       #  'previous two weeks': [len(weeksago(df)),"{} ({:.2f}%)".format(len(weeksago(df))*5,(((len(weeksago(df))-len(samplecollected(weeksago(df))))/len(weeksago(df)))*100))]
         }
 #"{} {.2f%} ".format(len(df),((len(dfsample)*5-samplecollected(df)*5/len(df)*5)*100)),((len(weeksago(df))*5-samplecollected(weeksago(dfsample))*5/len(weeksago(dfsample))*5)*100)
-
+data3 = {' ':['Yellow fever','Lassa','Ebola','Zika','Dengue'],
+        'Last two weeks': ["{} ({:.2f}%)".format((df['yellowfever_pcr'] == 'Positive').sum(),(df['yellowfever_pcr'] == 'Positive').sum()*100/len(df)),"{} ({:.2f}%)".format((df['lassa_pcr'] == 'Positive').sum(),(df['lassa_pcr'] == 'Positive').sum()*100/len(df)),"{} ({:.2f}%)".format((df['ebola_pcr'] == 'Positive').sum(),(df['ebola_pcr'] == 'Positive').sum()*100/len(df)),"{} ({:.2f}%)".format((df['zika_pcr'] == 'Positive').sum(),(df['zika_pcr'] == 'Positive').sum()*100/len(df)),"{} ({:.2f}%)".format((df['dengue_pcr'] == 'Positive').sum(),(df['dengue_pcr'] == 'Positive').sum()*100/len(df))]
+    ,
+      #  'previous two weeks': [len(weeksago(df)),"{} ({:.2f}%)".format(len(weeksago(df))*5,(((len(weeksago(df))-len(samplecollected(weeksago(df))))/len(weeksago(df)))*100))]
+        }
     # Create DataFrame
 dataframe2 = pd.DataFrame(data2)
-
+dataframe3 = pd.DataFrame(data3)
     # Display the DataFrame as a table
 #st.dataframe(dataframe2) 
 st.write("## Overall summary")
-col1, col2=st.columns((2))
+col1, col2,col3=st.columns((3))
 
 with col1:
     st.dataframe(dataframe1) 
  
 with col2:
-    st.dataframe(dataframe2) 
+    st.dataframe(dataframe2)
+with col3:
+    st.dataframe(dataframe3) 
   
 for state in df['siteregion_crf'].unique():
    dfs=df[df['siteregion_crf']==state]  
