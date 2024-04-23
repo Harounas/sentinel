@@ -194,10 +194,9 @@ dataframe3 = pd.DataFrame(data3)
     # Display the DataFrame as a table
 #st.dataframe(dataframe2) 
 st.write("## Overall summary")
-col1=st.columns((1))
+st.dataframe(dataframe1)
 col2,col3=st.columns((2))
-with col1:
-    st.dataframe(dataframe1) 
+ 
  
 with col2:
     st.dataframe(dataframe2)
