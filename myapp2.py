@@ -87,16 +87,19 @@ def main():
   
   
 df=main() 
-
-def are_rows_same(row1, row2):
+def row_differences(row1, row2):
     if len(row1) != len(row2):
-        return False
+        return "Rows have different lengths"
     
+    differences = []
     for i in range(len(row1)):
         if row1[i] != row2[i]:
-            return False
+            differences.append((row1[i], row2[i]))
     
-    return True
+    if differences:
+        return differences
+    else:
+        return "Rows are identical"
 
 st.write(are_rows_same(df['participantid_crf'], df['participantid_rdt']))       
 #df = conn.read(spreadsheet=url)
