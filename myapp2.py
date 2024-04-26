@@ -101,7 +101,7 @@ def row_differences(row1, row2):
     else:
         return "Rows are identical"
 
-st.write(are_rows_same(df['participantid_crf'], df['participantid_rdt']))       
+st.write(row_differences(df['participantid_crf'], df['participantid_rdt']))       
 #df = conn.read(spreadsheet=url)
 df['date_crf'] = pd.to_datetime(df['date_crf'], errors='coerce', format='%Y-%m-%d')
 df=df.dropna(subset=['siteregion_crf'])
