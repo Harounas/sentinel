@@ -102,7 +102,7 @@ def row_differences(row1, row2):
         return "Rows are identical"
 
 st.write(row_differences(df['participantid_crf'], df['participantid_rdt'])) 
-selected_rows = df[df['participantid_crf'] == '1-01-24-0938']
+selected_rows = df[df['participantid_crf'] == '101240938']
 st.write(selected_rows)
 #df = conn.read(spreadsheet=url)
 df['date_crf'] = pd.to_datetime(df['date_crf'], errors='coerce', format='%Y-%m-%d')
