@@ -88,8 +88,6 @@ def main():
   
 df=main() 
 
-
-st.write(df['Record ID'].head())
        
 #df = conn.read(spreadsheet=url)
 df['date_crf'] = pd.to_datetime(df['date_crf'], errors='coerce', format='%Y-%m-%d')
