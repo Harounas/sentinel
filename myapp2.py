@@ -102,7 +102,7 @@ def row_differences(row1, row2):
         return "Rows are identical"
 
 st.write(row_differences(df['participantid_crf'], df['participantid_rdt'])) 
-st.write(df['participantid_crf'].max)
+st.write(df['participantid_crf'][2])
 selected_rows = df[df['participantid_crf'] == '101240938']
 st.write(selected_rows)
 #df = conn.read(spreadsheet=url)
