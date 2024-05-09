@@ -20,8 +20,8 @@ from datetime import datetime, timedelta
 from scipy.stats import chi2_contingency, fisher_exact
 from scipy.stats import zscore
 
-url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
-
+#url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
+url="https://docs.google.com/spreadsheets/d/1sdRyErywJKtMQq8ux2fJUPAbWY82533KuvDp1ZOQTno/edit?usp=sharing"
 conn = st.connection("gsheets", type=GSheetsConnection)
 st.title("Data summary sentinel project")
 st.markdown("---")
