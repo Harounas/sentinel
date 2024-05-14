@@ -101,8 +101,8 @@ def row_differences(row1, row2):
     else:
         return "Rows are identical"
 df['siteregion_crf']=df['siteregion_crf'].replace({1:'IKORODU',4:'ABAKALIKI',2:'OWO',3:'IRRUA'})
-st.write(row_differences(df['participantid_crf'], df['participantid_rdt'])) 
-st.write(df['participantid_crf'])
+#st.write(row_differences(df['participantid_crf'], df['participantid_rdt'])) 
+#st.write(df['participantid_crf'])
 selected_rows = df[df['participantid_crf'] == '12,230,180']
 st.write(selected_rows)
 #df = conn.read(spreadsheet=url)
