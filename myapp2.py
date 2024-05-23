@@ -104,7 +104,7 @@ df['siteregion_crf']=df['siteregion_crf'].replace({1:'IKORODU',4:'ABAKALIKI',2:'
 #st.write(row_differences(df['participantid_crf'], df['participantid_rdt'])) 
 #st.write(df['participantid_crf'])
 #selected_rows = df[df['participantid_crf'] == '12,230,180']
-st.write(selected_rows)
+#st.write(selected_rows)
 #df = conn.read(spreadsheet=url)
 df['date_crf'] = pd.to_datetime(df['date_crf'], errors='coerce', format='%Y-%m-%d')
 df=df.dropna(subset=['siteregion_crf'])
@@ -112,6 +112,8 @@ df=df.dropna(subset=['date_crf'])
 # Filter DataFrame based on current date and time
 df = df[(df['date_crf']<=pd.to_datetime(datetime.now()))]
 df=df.replace({'Ondo':'OWO','Lagos':'IKORODU','Ebonyi':'ABAKALIKI','Edo':'IRRUA'})
+df[['yellowfever_pcr','lassa_pcr','ebola_pcr','marburg_pcr','westnile_pcr','zika_pcr','cchf_pcr','riftvalley_pcr','dengue_pcr','ony_pcr','covid_pcr','mpox_pcr']]=df[['yellowfever_pcr','lassa_pcr','ebola_pcr','marburg_pcr','westnile_pcr','zika_pcr','cchf_pcr','riftvalley_pcr','dengue_pcr','ony_pcr','covid_pcr','mpox_pcr']].replace({1:'Positive',0:'Negative'})
+df[['hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']]=df[['hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']].replace({1:'Positive',0:'Negative'})
 #df['Date of visit'] =pd.to_datetime(df['Date of visit'] ).dt.strftime('%Y-%m-%d')
 col1, col2=st.sidebar.columns((2))
 #Startdate=pd.to_datetime(df['date_crf']).min()
