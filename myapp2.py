@@ -271,6 +271,7 @@ ax.set_ylabel('Value')
 plt.xticks(rotation=45)
 #ax.tight_layout()
 st.pyplot(fig)
+plt.savefig('foo.png')
 
 dff= df.groupby(['hiv_rdt', 'siteregion_crf']).size().reset_index(name='Count')
 
