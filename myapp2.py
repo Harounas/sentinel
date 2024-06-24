@@ -15,13 +15,13 @@ from io import StringIO
 import seaborn as sns
 ssl._create_default_https_context = ssl._create_stdlib_context
 from datetime import datetime, timedelta
-#from ipyvizzu import Chart, Data, Config
+
 #from st_vizzu import *
 from scipy.stats import chi2_contingency, fisher_exact
 from scipy.stats import zscore
 
 #url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
-url="https://docs.google.com/spreadsheets/d/1rriKyxIywIMi4RRC9WTOfSifhapqQEqK-kxAbmkhVvA/edit?usp=sharing"
+url="https://docs.google.com/spreadsheets/d/1sdRyErywJKtMQq8ux2fJUPAbWY82533KuvDp1ZOQTno/edit?usp=sharing"
 conn = st.connection("gsheets", type=GSheetsConnection)
 st.title("Data summary sentinel project")
 st.markdown("---")
@@ -47,7 +47,7 @@ def main():
         st.write("File contents:")
         # Read and display file contents
         df = uploaded_file.read()
-        #st.write(df.head())
+        #st.write(df)
     
     # Text input widget for token
     token = st.sidebar.text_input("Input a token")
@@ -87,23 +87,10 @@ def main():
   
   
 df=main() 
-def row_differences(row1, row2):
-    if len(row1) != len(row2):
-        return "Rows have different lengths"
-    
-    differences = []
-    for i in range(len(row1)):
-        if row1[i] != row2[i]:
-            differences.append((row1[i], row2[i]))
-    
-    if differences:
-        return differences
-    else:
-        return "Rows are identical"
-df['siteregion_crf']=df['siteregion_crf'].replace({1:'IKORODU',4:'ABAKALIKI',2:'OWO',3:'IRRUA'})
-#st.write(row_differences(df['participantid_crf'], df['participantid_rdt'])) 
-#st.write(df['participantid_crf'])
 
+
+
+       
 #df = conn.read(spreadsheet=url)
 df['date_crf'] = pd.to_datetime(df['date_crf'], errors='coerce', format='%Y-%m-%d')
 df=df.dropna(subset=['siteregion_crf'])
@@ -111,12 +98,10 @@ df=df.dropna(subset=['date_crf'])
 # Filter DataFrame based on current date and time
 df = df[(df['date_crf']<=pd.to_datetime(datetime.now()))]
 df=df.replace({'Ondo':'OWO','Lagos':'IKORODU','Ebonyi':'ABAKALIKI','Edo':'IRRUA'})
-df[['yellowfever_pcr','lassa_pcr','ebola_pcr','marburg_pcr','westnile_pcr','zika_pcr','cchf_pcr','riftvalley_pcr','dengue_pcr','ony_pcr','covid_pcr','mpox_pcr']]=df[['yellowfever_pcr','lassa_pcr','ebola_pcr','marburg_pcr','westnile_pcr','zika_pcr','cchf_pcr','riftvalley_pcr','dengue_pcr','ony_pcr','covid_pcr','mpox_pcr']].replace({1:'Positive',0:'Negative'})
-df[['hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']]=df[['hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']].replace({1:'Positive',0:'Negative'})
 #df['Date of visit'] =pd.to_datetime(df['Date of visit'] ).dt.strftime('%Y-%m-%d')
 col1, col2=st.sidebar.columns((2))
 #Startdate=pd.to_datetime(df['date_crf']).min()
-
+df['siteregion_crf']=df['siteregion_crf'].replace({1:'IKORODU',4:'ABAKALIKI',2:'OWO',3:'IRRUA'})
 Enddate=pd.to_datetime(df['date_crf']).max()
 Startdate=  pd.to_datetime(Enddate - timedelta(weeks=2))
 with col1:
@@ -175,7 +160,7 @@ dfpcr1=samplepcr(df)
 
 sliced_df =df[(df['date_crf']>=date1)&(df['date_crf']<=two_weeks_ago)].copy()
 data1 = {' ':['Patient enrolled','Sample collected','RDTs run','PCRs run'],
-        'Last two weeks': [len(df),"{} ({:.2f}%)".format(len(df)*5-dfsample1.isnull().sum().sum(),(((len(df)*5-dfsample1.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*5-dftest1.isnull().sum().sum(),(((len(df)*5-dftest1.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*12-dfpcr1.isnull().sum().sum(),(((len(df)*12-dfpcr1.isnull().sum().sum())/(len(df)*12))*100))]
+        'Last two weeks': [len(df),"{} ({:.2f}%)".format(len(df)*5,(((len(df)*5-dfsample1.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*5,(((len(df)*5-dftest1.isnull().sum().sum())/(len(df)*5))*100)),"{} ({:.2f}%)".format(len(df)*12,(((len(df)*12-dfpcr1.isnull().sum().sum())/(len(df)*12))*100))]
     
       #  'previous two weeks': [len(weeksago(df)),"{} ({:.2f}%)".format(len(weeksago(df))*5,(((len(weeksago(df))-len(samplecollected(weeksago(df))))/len(weeksago(df)))*100))]
         }
@@ -183,7 +168,7 @@ data1 = {' ':['Patient enrolled','Sample collected','RDTs run','PCRs run'],
 
     # Create DataFrame
 data11 = {' ':['Patient enrolled','Sample collected','RDTs run','PCRs run'],
-        'Last two weeks': [len(df),"{} ({:.2f}%)".format(5*(len(df)-len(dfsample1)),((len(df)-len(dfsample1))/len(df))*100),"{} ({:.2f}%)".format(len(df)*5-5*len(dftest1),((len(df)-len(dftest1))/(len(df)))*100),"{} ({:.2f}%)".format(len(df)*12,((len(dfpcr1)-len(dfpcr1))/len(df))*100)]
+        'Last two weeks': [len(df),"{} ({:.2f}%)".format(len(df)*5,((len(df)-len(dfsample1))/len(df))*100),"{} ({:.2f}%)".format(len(df)*5,((len(df)-len(dftest1))/(len(df)))*100),"{} ({:.2f}%)".format(len(df)*12,((len(dfpcr1)-len(dfpcr1))/len(df))*100)]
     
       #  'previous two weeks': [len(weeksago(df)),"{} ({:.2f}%)".format(len(weeksago(df))*5,(((len(weeksago(df))-len(samplecollected(weeksago(df))))/len(weeksago(df)))*100))]
         }
@@ -198,27 +183,20 @@ data2 = {' ':['HIV','Malaria','Hepatitis B','Hepatitiis C','Syphilis'],
       #  'previous two weeks': [len(weeksago(df)),"{} ({:.2f}%)".format(len(weeksago(df))*5,(((len(weeksago(df))-len(samplecollected(weeksago(df))))/len(weeksago(df)))*100))]
         }
 #"{} {.2f%} ".format(len(df),((len(dfsample)*5-samplecollected(df)*5/len(df)*5)*100)),((len(weeksago(df))*5-samplecollected(weeksago(dfsample))*5/len(weeksago(dfsample))*5)*100)
-data3 = {' ':['Yellow fever','Lassa','Ebola','Zika','Dengue'],
-        'Last two weeks': ["{} ({:.2f}%)".format((df['yellowfever_pcr'] == 'Positive').sum(),(df['yellowfever_pcr'] == 'Positive').sum()*100/len(df)),"{} ({:.2f}%)".format((df['lassa_pcr'] == 'Positive').sum(),(df['lassa_pcr'] == 'Positive').sum()*100/len(df)),"{} ({:.2f}%)".format((df['ebola_pcr'] == 'Positive').sum(),(df['ebola_pcr'] == 'Positive').sum()*100/len(df)),"{} ({:.2f}%)".format((df['zika_pcr'] == 'Positive').sum(),(df['zika_pcr'] == 'Positive').sum()*100/len(df)),"{} ({:.2f}%)".format((df['dengue_pcr'] == 'Positive').sum(),(df['dengue_pcr'] == 'Positive').sum()*100/len(df))]
-    ,
-      #  'previous two weeks': [len(weeksago(df)),"{} ({:.2f}%)".format(len(weeksago(df))*5,(((len(weeksago(df))-len(samplecollected(weeksago(df))))/len(weeksago(df)))*100))]
-        }
+
     # Create DataFrame
 dataframe2 = pd.DataFrame(data2)
-dataframe3 = pd.DataFrame(data3)
+
     # Display the DataFrame as a table
 #st.dataframe(dataframe2) 
 st.write("## Overall summary")
-st.dataframe(dataframe1)
-col2,col3=st.columns((2))
- 
+col1, col2=st.columns((2))
+
+with col1:
+    st.dataframe(dataframe1) 
  
 with col2:
-    st.write("## Test summary")
-    st.dataframe(dataframe2)
-with col3:
-    st.write("## PCR summary")
-    st.dataframe(dataframe3) 
+    st.dataframe(dataframe2) 
   
 for state in df['siteregion_crf'].unique():
    dfs=df[df['siteregion_crf']==state]  
@@ -271,7 +249,6 @@ ax.set_ylabel('Value')
 plt.xticks(rotation=45)
 #ax.tight_layout()
 st.pyplot(fig)
-plt.savefig('foo.png')
 
 dff= df.groupby(['hiv_rdt', 'siteregion_crf']).size().reset_index(name='Count')
 
