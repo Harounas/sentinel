@@ -47,7 +47,7 @@ def main():
         st.write("File contents:")
         # Read and display file contents
         df = uploaded_file.read()
-        #st.write(df)
+        #st.write(df.head())
     
     # Text input widget for token
     token = st.sidebar.text_input("Input a token")
