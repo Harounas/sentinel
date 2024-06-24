@@ -47,7 +47,7 @@ def main():
         st.write("File contents:")
         # Read and display file contents
         df = uploaded_file.read()
-        st.write(df)
+        #st.write(df)
     
     # Text input widget for token
     token = st.sidebar.text_input("Input a token")
@@ -278,7 +278,7 @@ dff= df.groupby(['hiv_rdt', 'siteregion_crf']).size().reset_index(name='Count')
 dfff=pd.merge(dff,dff.groupby(['siteregion_crf']).sum().reset_index(),on="siteregion_crf")
 
 
-#dfc=df[(df['participantid_crf']!=np.nan)&(df['participantid_rdt']!=np.nan)&(df['participantid_rdt']!=df['participantid_crf'])&(df['age_rdt']!=df['age_crf'])|(df['sex_rdt']!=df['sex_crf'])]
+dfc=df[(df['participantid_crf']!=np.nan)&(df['participantid_rdt']!=np.nan)&(df['participantid_rdt']!=df['participantid_crf'])&(df['age_rdt']!=df['age_crf'])|(df['sex_rdt']!=df['sex_crf'])]
 dfc=dfc.dropna(subset=['participantid_crf','participantid_rdt'])
 st.write(f"## Mismatch check between forms: number of mismach is {len(dfc)} ")
 st.write(dfc[['participantid_crf','participantid_rdt','age_rdt','age_crf','sex_crf','sex_rdt' ,'siteregion_crf']])     
