@@ -90,7 +90,7 @@ df=main()
 
 
 
-st.write(df.columns.tolist())       
+   
 #df = conn.read(spreadsheet=url)
 df['date_crf'] = pd.to_datetime(df['date_crf'], errors='coerce', format='%Y-%m-%d')
 df=df.dropna(subset=['siteregion_crf'])
@@ -188,7 +188,8 @@ data2 = {' ':['HIV','Malaria','Hepatitis B','Hepatitiis C','Syphilis'],
 dataframe2 = pd.DataFrame(data2)
 
     # Display the DataFrame as a table
-#st.dataframe(dataframe2) 
+#st.dataframe(dataframe2)
+st.write(df.columns.tolist())    
 st.write("## Overall summary")
 col1, col2=st.columns((2))
 
