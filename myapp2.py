@@ -21,7 +21,7 @@ from scipy.stats import chi2_contingency, fisher_exact
 from scipy.stats import zscore
 
 #url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
-url="https://docs.google.com/spreadsheets/d/18b5Ae4aIUgTJrdlVKrvo7D-V6DTy1fAvHkIdHMjsUY4/edit?usp=sharing"
+url="https://docs.google.com/spreadsheets/d/1VFzskq_LNAX6NOfVWShhabi1dkZPYxoDsuJczt__RYw/edit?usp=sharing"
 conn = st.connection("gsheets", type=GSheetsConnection)
 st.title("Data summary sentinel project")
 st.markdown("---")
