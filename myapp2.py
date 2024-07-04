@@ -189,7 +189,7 @@ dataframe2 = pd.DataFrame(data2)
 
     # Display the DataFrame as a table
 #st.dataframe(dataframe2)
-st.write(df.columns.tolist())    
+st.write(df.head())    
 st.write("## Overall summary")
 col1, col2=st.columns((2))
 
