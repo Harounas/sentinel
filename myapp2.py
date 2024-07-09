@@ -30,7 +30,7 @@ st.markdown("---")
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 st.markdown("---")
-@st.cache_data
+#@st.cache_data
 def load_data(datapath):
     dataset = conn.read(spreadsheet=datapath)
     return dataset
@@ -81,8 +81,8 @@ def main():
 
         df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
-    #else:
-      #  df=df0     
+    else:
+        df=df0     
 
     return df
   
