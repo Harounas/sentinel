@@ -230,7 +230,7 @@ dff= df.groupby(['date_crf', 'siteregion_crf']).size().reset_index(name='Count')
 dff['date_crf'] =pd.to_datetime(dff['date_crf'] ).dt.strftime('%Y-%m-%d')
 dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
 dfff['Total']='Total'
-fig,ax = plt.subplots(figsize=(12, 12))
+fig,ax = plt.subplots(figsize=(12, 8))
 sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Date', ylabel='siteregion_crf')
 sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel='siteregion_crf')
 #sns.set_theme(style='white', font_scale=3)
