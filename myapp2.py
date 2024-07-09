@@ -54,7 +54,7 @@ def main():
     token = st.sidebar.text_input("Input a token")
 
     # If a token is provided
-    elif token:
+    if token:
         #st.sidebar.header("Token provided:", token)
         data = {
     'token':token,
@@ -84,7 +84,7 @@ def main():
     else:
         df=df0     
 
-    return df
+return df
   
   
 df=main() 
