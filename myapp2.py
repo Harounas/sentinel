@@ -54,7 +54,7 @@ def main():
     token = st.sidebar.text_input("Input a token")
 
     # If a token is provided
-    if token:
+    elif token:
         #st.sidebar.header("Token provided:", token)
         data = {
     'token':token,
@@ -81,7 +81,7 @@ def main():
 
         df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
-    else:
+    elif:
         df=df0     
 
     return df
