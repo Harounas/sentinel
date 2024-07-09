@@ -19,20 +19,19 @@ from datetime import datetime, timedelta
 #from st_vizzu import *
 from scipy.stats import chi2_contingency, fisher_exact
 from scipy.stats import zscore
+background: #ff0099; 
+  background: -webkit-linear-gradient(to right, #ff0099, #493240); 
+  background: linear-gradient(to right, #ff0099, #493240);"
 
-st.markdown(
-    """
-    <style>
-    .reportview-container {
-        background: url("url_goes_here")
-    }
-   .sidebar .sidebar-content {
-        background: url("url_goes_here")
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<style>
+body {
+  background: #ff0099; 
+  background: -webkit-linear-gradient(to right, #ff0099, #493240); 
+  background: linear-gradient(to right, #ff0099, #493240); 
+}
+</style>
+    """, unsafe_allow_html=True)
 
 #url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
 url="https://docs.google.com/spreadsheets/d/1ggxbbdEn-DAhrlbq18R5X8mDyfrLiLmnCL6VLPFwqW0/edit?usp=sharing"
