@@ -20,13 +20,6 @@ from datetime import datetime, timedelta
 from scipy.stats import chi2_contingency, fisher_exact
 from scipy.stats import zscore
 
-st.markdown("""
-    <style>
-    .stForm {
-        background-color: #000000;
-    }
-    </style>
-""", unsafe_allow_html=True)
 
 #url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
 url="https://docs.google.com/spreadsheets/d/1ggxbbdEn-DAhrlbq18R5X8mDyfrLiLmnCL6VLPFwqW0/edit?usp=sharing"
@@ -237,7 +230,7 @@ dff= df.groupby(['date_crf', 'siteregion_crf']).size().reset_index(name='Count')
 dff['date_crf'] =pd.to_datetime(dff['date_crf'] ).dt.strftime('%Y-%m-%d')
 dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
 dfff['Total']='Total'
-fig,ax = plt.subplots(figsize=(30, 10))
+fig,ax = plt.subplots(figsize=(12, 12))
 sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Date', ylabel='siteregion_crf')
 sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel='siteregion_crf')
 #sns.set_theme(style='white', font_scale=3)
