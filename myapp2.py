@@ -20,6 +20,13 @@ from datetime import datetime, timedelta
 from scipy.stats import chi2_contingency, fisher_exact
 from scipy.stats import zscore
 
+st.markdown("""
+    <style>
+    .stForm {
+        background-color: #000000;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 #url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
 url="https://docs.google.com/spreadsheets/d/1ggxbbdEn-DAhrlbq18R5X8mDyfrLiLmnCL6VLPFwqW0/edit?usp=sharing"
