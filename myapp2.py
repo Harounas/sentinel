@@ -230,7 +230,7 @@ dff= df.groupby(['date_crf', 'siteregion_crf']).size().reset_index(name='Count')
 dff['date_crf'] =pd.to_datetime(dff['date_crf'] ).dt.strftime('%Y-%m-%d')
 dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
 dfff['Total']='Total'
-fig,ax = plt.subplots(figsize=(12, 8))
+fig,ax = plt.subplots(figsize=(15, 12))
 sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Date', ylabel='siteregion_crf')
 sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel='siteregion_crf')
 #sns.set_theme(style='white', font_scale=3)
@@ -244,7 +244,7 @@ ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
 #monthly_ticks = pd.date_range(start=dff['Date of visit (dd/mm/yyyy)'].iloc[0], end=dff['Date of visit (dd/mm/yyyy)'].iloc[-1],freq='d')  # Monthly intervals
 #plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
 
-ax.tick_params(axis='x', labelsize=12)
+ax.tick_params(axis='x', labelsize=10)
 ax.set_xlabel('Date')
 ax.set_ylabel('Value')
 #ax.set_title('Plot through Time with Custom X-axis Ticks')
