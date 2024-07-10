@@ -70,7 +70,7 @@ def main():
         st.text(content)
     st.sidebar.title("Please  upload your own file  or Token")      
     
-    elif uploaded_file is None:
+    if uploaded_file is None:
     # If a token is provided
      if token:
         #st.sidebar.header("Token provided:", token)
