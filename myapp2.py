@@ -96,7 +96,7 @@ def main():
 
         df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
-    elif:
+    else:
         df=load_data(url)
 
     return df
