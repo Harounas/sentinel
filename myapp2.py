@@ -59,15 +59,15 @@ def main():
       if uploaded_file.name.endswith('.csv'):
         df = pd.read_csv(uploaded_file)
         st.write("CSV file data:")
-        st.dataframe(df)
+        #st.dataframe(df)
       elif uploaded_file.name.endswith('.xlsx'):
         df = pd.read_excel(uploaded_file)
         st.write("Excel file data:")
-        st.dataframe(df)
+        #st.dataframe(df)
       elif uploaded_file.name.endswith('.txt'):
         df = uploaded_file.read().decode("utf-8")
         st.write("Text file content:")
-        st.text(content)
+        #st.text(content)
     st.sidebar.title("Please  upload your own file  or Token")      
     
     if uploaded_file is None:
@@ -100,7 +100,7 @@ def main():
         df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
      else:
-        df=load_data(datapath)
+        df=load_data(url)
 
     return df
   
