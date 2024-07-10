@@ -34,22 +34,36 @@ st.markdown("---")
 def load_data(datapath):
     dataset = conn.read(spreadsheet=datapath)
     return dataset
-
+uploaded_file =  st.sidebar.file_uploader("Upload a file", type=["txt", "csv", "xlsx"])
 #df0 = load_data(url)
 def main():
-    st.sidebar.title("Please  upload your own file  or Token")
     
-    # File uploader widget
-    uploaded_file =  st.sidebar.file_uploader("Upload a file", type=["txt", "csv", "xlsx"])
-
     # If a file is uploaded
     if uploaded_file is not None:
-        st.write("File uploaded successfully!")
-        st.write("File contents:")
+        #st.write("File uploaded successfully!")
+        #st.write("File contents:")
         # Read and display file contents
-        df = uploaded_file.read()
+        #df = uploaded_file.read()
         #st.write(df)
+       
     
+    # File uploader widget
+    
+      st.write("File uploaded:", uploaded_file.name)
+     # Handle different file types
+      if uploaded_file.name.endswith('.csv'):
+        df = pd.read_csv(uploaded_file)
+        st.write("CSV file data:")
+        st.dataframe(df)
+      elif uploaded_file.name.endswith('.xlsx'):
+        df = pd.read_excel(uploaded_file)
+        st.write("Excel file data:")
+        st.dataframe(df)
+      elif uploaded_file.name.endswith('.txt'):
+        df = uploaded_file.read().decode("utf-8")
+        st.write("Text file content:")
+        st.text(content)
+    st.sidebar.title("Please  upload your own file  or Token")      
     # Text input widget for token
     token = st.sidebar.text_input("Input a token")
 
