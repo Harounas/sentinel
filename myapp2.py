@@ -35,6 +35,8 @@ def load_data(datapath):
     dataset = conn.read(spreadsheet=datapath)
     return dataset
 uploaded_file =  st.sidebar.file_uploader("Upload a file", type=["txt", "csv", "xlsx"])
+# Text input widget for token
+token = st.sidebar.text_input("Input a token")
 #df0 = load_data(url)
 def main():
     
@@ -64,8 +66,7 @@ def main():
         st.write("Text file content:")
         st.text(content)
     st.sidebar.title("Please  upload your own file  or Token")      
-    # Text input widget for token
-    token = st.sidebar.text_input("Input a token")
+    
 
     # If a token is provided
     elif token:
