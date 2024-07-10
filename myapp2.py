@@ -37,6 +37,9 @@ def load_data(datapath):
 uploaded_file =  st.sidebar.file_uploader("Upload a file", type=["txt", "csv", "xlsx"])
 # Text input widget for token
 token = st.sidebar.text_input("Input a token")
+token = st.sidebar.text_input("Input a token")
+myurl= st.sidebar.text_input("provide a url")
+
 #df0 = load_data(url)
 def main():
     
@@ -67,9 +70,9 @@ def main():
         st.text(content)
     st.sidebar.title("Please  upload your own file  or Token")      
     
-
+    elif uploaded_file is None:
     # If a token is provided
-    if token:
+     if token:
         #st.sidebar.header("Token provided:", token)
         data = {
     'token':token,
@@ -96,7 +99,7 @@ def main():
 
         df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
-    else:
+     else:
         df=load_data(datapath)
 
     return df
