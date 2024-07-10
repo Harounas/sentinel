@@ -30,12 +30,12 @@ st.markdown("---")
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 st.markdown("---")
-#@st.cache_data
+@st.cache_data
 def load_data(datapath):
     dataset = conn.read(spreadsheet=datapath)
     return dataset
 
-df0 = load_data(url)
+#df0 = load_data(url)
 def main():
     st.sidebar.title("Please  upload your own file  or Token")
     
