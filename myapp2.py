@@ -68,7 +68,7 @@ def main():
     token = st.sidebar.text_input("Input a token")
 
     # If a token is provided
-    if token:
+    elif token:
         #st.sidebar.header("Token provided:", token)
         data = {
     'token':token,
