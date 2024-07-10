@@ -37,8 +37,8 @@ def load_data(datapath):
 uploaded_file =  st.sidebar.file_uploader("Upload a file", type=["txt", "csv", "xlsx"])
 # Text input widget for token
 token = st.sidebar.text_input("Input a token")
-token = st.sidebar.text_input("Input a token")
-myurl= st.sidebar.text_input("provide a url")
+#token = st.sidebar.text_input("Input a token")
+
 
 #df0 = load_data(url)
 def main():
