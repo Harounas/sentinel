@@ -30,10 +30,10 @@ st.markdown("---")
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 st.markdown("---")
-#@st.cache_data
-#def load_data(datapath):
-   # dataset = conn.read(spreadsheet=datapath)
-    #return dataset
+@st.cache_data
+def load_data(datapath):
+    dataset = conn.read(spreadsheet=datapath)
+    return dataset
 uploaded_file =  st.sidebar.file_uploader("Upload a file", type=["txt", "csv", "xlsx"])
 # Text input widget for token
 token = st.sidebar.text_input("Input a token")
@@ -97,7 +97,7 @@ def main():
         df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
     else:
-        df=conn.read(spreadsheet=url)
+        df=load_data(datapath)
 
     return df
   
