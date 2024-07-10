@@ -69,7 +69,7 @@ def main():
     
 
     # If a token is provided
-    elif token:
+    if token:
         #st.sidebar.header("Token provided:", token)
         data = {
     'token':token,
