@@ -112,7 +112,7 @@ df=main()
    
 #df = conn.read(spreadsheet=url)
 df['date_crf'] = pd.to_datetime(df['date_crf'], errors='coerce', format='%Y-%m-%d')
-df[['hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']]=df[['hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']].replace({1:'Positive',0:'Negative'})
+#df[['hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']]=df[['hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']].replace({1:'Positive',0:'Negative'})
 df=df.dropna(subset=['siteregion_crf'])
 df=df.dropna(subset=['date_crf'])
 # Filter DataFrame based on current date and time
