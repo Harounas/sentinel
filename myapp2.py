@@ -64,7 +64,7 @@ def main():
             dfS.append(d)
 
         if dfS:
-            df = pd.concat(dfS, ignore_index=True)
+            df = pd.merge(dfS, ignore_index=True)
             st.write("Merged DataFrame:")
             st.write(df)
             
