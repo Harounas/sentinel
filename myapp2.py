@@ -15,7 +15,7 @@ from io import StringIO
 import seaborn as sns
 ssl._create_default_https_context = ssl._create_stdlib_context
 from datetime import datetime, timedelta
-
+import io
 #from st_vizzu import *
 from scipy.stats import chi2_contingency, fisher_exact
 from scipy.stats import zscore
@@ -270,7 +270,19 @@ ax.set_ylabel('Value')
 plt.xticks(rotation=45)
 #ax.tight_layout()
 st.pyplot(fig)
-st.write(fig)
+# Save the plot to a file-like object
+buf = io.BytesIO()
+fig.savefig(buf, format='png')
+buf.seek(0)
+
+# Create a download button for the plot
+st.download_button(
+    label="Download Plot",
+    data=buf,
+    file_name="plot.png",
+    mime="image/png"
+)
+
 dff= df.groupby(['hiv_rdt', 'siteregion_crf']).size().reset_index(name='Count')
 
 dfff=pd.merge(dff,dff.groupby(['siteregion_crf']).sum().reset_index(),on="siteregion_crf")
