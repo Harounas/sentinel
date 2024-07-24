@@ -79,7 +79,7 @@ def main():
         #else:
            # st.write("No files uploaded or files are empty.")
     else:
-     st.write("Please upload files.")
+     #st.write("Please upload files.")
         #df = pd.read_csv(uploaded_file)
         #st.write("CSV file data:")
         #st.dataframe(df)
@@ -91,11 +91,11 @@ def main():
        # df = uploaded_file.read().decode("utf-8")
         #st.write("Text file content:")
         
-     st.sidebar.title("Please  upload your own file  or Token")      
+     #st.sidebar.title("Please  upload your own file  or Token")      
     
-     if uploaded_file is None:
+     #if uploaded_file is None:
     # If a token is provided
-      if token:
+      #if token:
         #st.sidebar.header("Token provided:", token)
         data = {
     'token':token,
@@ -118,11 +118,11 @@ def main():
     'exportDataAccessGroups': 'false',
     'returnFormat': 'csv'
 }
-        r = requests.post('https://redcap-acegid.org/api/',data=data)
+        #r = requests.post('https://redcap-acegid.org/api/',data=data)
 
-        df = pd.read_csv(StringIO(r.text),  low_memory=False)
+        #df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
-      else:
+      #else:
         df=load_data(url)
 
       return df
