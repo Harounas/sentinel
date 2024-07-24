@@ -55,7 +55,7 @@ def main():
     
     # File uploader widget
     
-      st.write("File uploaded:", uploaded_file.name)
+      #st.write("File uploaded:", uploaded_file.name)
      # Handle different file types
       if uploaded_file.name.endswith('.csv'):
         dfS = []
