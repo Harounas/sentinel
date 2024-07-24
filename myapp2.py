@@ -271,15 +271,15 @@ plt.xticks(rotation=45)
 #ax.tight_layout()
 st.pyplot(fig)
 # Save the plot to a file-like object
-buf = io.BytesIO()
-fig.savefig(buf, format='png')
-buf.seek(0)
+buf1 = io.BytesIO()
+fig.savefig(buf1, format='png')
+buf1.seek(0)
 
 # Create a download button for the plot
 st.download_button(
     label="Download Plot",
-    data=buf,
-    file_name="plot.png",
+    data=buf1,
+    file_name="plot_date.png",
     mime="image/png"
 )
 
@@ -338,6 +338,18 @@ if select_catcol:
     data = [trace]
     fig = go.Figure(data=data,layout=layout)
     st.plotly_chart(fig)
+    buf1 = io.BytesIO()
+    fig.savefig(buf2, format='png')
+    buf2.seek(0)
+
+# Create a download button for the plot
+    st.download_button(
+    label="Download Plot",
+    data=buf2,
+    file_name="plot_bar.png",
+    mime="image/png"
+)
+
 else:
     st.info('Please select a categorical column using the dropdown above.')
 
