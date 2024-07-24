@@ -35,7 +35,7 @@ st.markdown("---")
 def load_data(datapath):
     dataset = conn.read(spreadsheet=datapath)
     return dataset
-uploaded_file =  st.sidebar.file_uploader("Upload a file",accept_multiple_files=True, type="csv")
+
 # Text input widget for token
 token = st.sidebar.text_input("Input a token")
 #token = st.sidebar.text_input("Input a token")
@@ -43,7 +43,7 @@ token = st.sidebar.text_input("Input a token")
 
 #df0 = load_data(url)
 def main():
-    
+    uploaded_file =  st.sidebar.file_uploader("Upload a file",accept_multiple_files=True, type="csv")
     # If a file is uploaded
     if uploaded_file is not None:
         #st.write("File uploaded successfully!")
