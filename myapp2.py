@@ -66,7 +66,7 @@ def main():
         if dfS:
             df = pd.concat(dfS, ignore_index=True)
             st.write("Merged DataFrame:")
-            st.write(merged_df)
+            st.write(df)
             
             # Optionally: Save merged DataFrame as a new file
             st.download_button(
