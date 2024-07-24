@@ -338,7 +338,7 @@ if select_catcol:
     data = [trace]
     fig = go.Figure(data=data,layout=layout)
     st.plotly_chart(fig)
-    buf1 = io.BytesIO()
+    buf2 = io.BytesIO()
     fig.savefig(buf2, format='png')
     buf2.seek(0)
 
