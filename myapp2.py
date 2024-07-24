@@ -61,7 +61,7 @@ def main():
         dfS = []
         for uploaded_f in uploaded_file:
             d = pd.read_csv(uploaded_f)
-            dfS.append(df)
+            dfS.append(d)
 
         if dfS:
             df = pd.concat(dfS, ignore_index=True)
