@@ -125,7 +125,7 @@ df['siteregion_crf']=df['siteregion_crf'].replace({1:'IKORODU',4:'ABAKALIKI',2:'
 df['sex_crf']=df['sex_crf'].replace({1:'Male',2:'Female'})
 df['clinic_crf']=df['clinic_crf'].replace({1:'ISTH',2:'General Hospital Ikorodu',3:'AEFUTHA, Abakaliki',4:'FMC - Owo',5:'Other government hospital',6:'Other clinic',7:'Other hospital'})
 df['unit_crf']=df['unit_crf'].replace({1:'GOPD',2:'Pediatrics',3:'A&E',4:'Annex',5:'Other'})
-df['sex_sample']=df['sex_sample'].replace({1:'Male',2:"Female'})
+df['sex_sample']=df['sex_sample'].replace({1:'Male',2:'Female'})
 df[['bloodsample','urinesample','nasosample','salivasample','oralsample']]=df[['bloodsample','urinesample','nasosample','salivasample','oralsample']].replace({1:'Yes',0:'No'})
 Enddate=pd.to_datetime(df['date_crf']).max()
 Startdate=  pd.to_datetime(Enddate - timedelta(weeks=2))
