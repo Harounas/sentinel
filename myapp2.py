@@ -64,7 +64,8 @@ def main():
             dfS.append(d)
 
         if dfS:
-            df = pd.merge(dfS, ignore_index=True)
+            dfmerge = pd.merge(dfS, ignore_index=True)
+            df=dfmerge.drop_duplicates()
             st.write("Merged DataFrame:")
             st.write(df)
             
