@@ -58,17 +58,38 @@ def main():
       st.write("File uploaded:", uploaded_file.name)
      # Handle different file types
       if uploaded_file.name.endswith('.csv'):
-        df = pd.read_csv(uploaded_file)
-        st.write("CSV file data:")
+        dfS = []
+        for uploaded_f in uploaded_file:
+            d = pd.read_csv(uploaded_f)
+            dfS.append(df)
+
+        if dfS:
+            df = pd.concat(dfS, ignore_index=True)
+            st.write("Merged DataFrame:")
+            st.write(merged_df)
+            
+            # Optionally: Save merged DataFrame as a new file
+            st.download_button(
+                label="Download Merged CSV",
+                data=df.to_csv(index=False),
+                file_name="merged_dataframe.csv",
+                mime="text/csv"
+            )
+        else:
+            st.write("No files uploaded or files are empty.")
+    else:
+        st.write("Please upload files.")
+        #df = pd.read_csv(uploaded_file)
+        #st.write("CSV file data:")
         #st.dataframe(df)
-      elif uploaded_file.name.endswith('.xlsx'):
-        df = pd.read_excel(uploaded_file)
-        st.write("Excel file data:")
+      #elif uploaded_file.name.endswith('.xlsx'):
+       # df = pd.read_excel(uploaded_file)
+        #st.write("Excel file data:")
         #st.dataframe(df)
-      elif uploaded_file.name.endswith('.txt'):
-        df = uploaded_file.read().decode("utf-8")
-        st.write("Text file content:")
-        #st.text(content)
+      #elif uploaded_file.name.endswith('.txt'):
+       # df = uploaded_file.read().decode("utf-8")
+        #st.write("Text file content:")
+        
     st.sidebar.title("Please  upload your own file  or Token")      
     
     if uploaded_file is None:
