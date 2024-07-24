@@ -76,8 +76,10 @@ def main():
                 file_name="merged_dataframe.csv",
                 mime="text/csv"
             )
-        #else:
-           # st.write("No files uploaded or files are empty.")
+            return df0
+        else:
+           st.write("No files uploaded or files are empty.")
+           return pd.DataFrame()
     else:
      #st.write("Please upload files.")
         #df = pd.read_csv(uploaded_file)
