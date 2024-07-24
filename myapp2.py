@@ -139,9 +139,12 @@ def main():
     df = dataprocess(uploaded_file)
     st.write("DataFrame:")
     st.write(df['date_crf'])
+    return df
 
-if __name__ == "__main__":
-    main()
+df=main()
+
+#if __name__ == "__main__":
+   # main()
    
 #df = conn.read(spreadsheet=url)
 df['date_crf'] = pd.to_datetime(df['date_crf'], errors='coerce', format='%Y-%m-%d')
