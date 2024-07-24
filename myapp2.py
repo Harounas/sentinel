@@ -65,14 +65,14 @@ def main():
 
         if dfS:
             dfmerge =  pd.concat(dfS, ignore_index=True)
-            df=dfmerge.drop_duplicates()
+            df0=dfmerge.drop_duplicates()
             st.write("Merged DataFrame:")
-            st.write(df)
+            st.write(df0)
             
             # Optionally: Save merged DataFrame as a new file
             st.download_button(
                 label="Download Merged CSV",
-                data=df.to_csv(index=False),
+                data=df0.to_csv(index=False),
                 file_name="merged_dataframe.csv",
                 mime="text/csv"
             )
@@ -123,9 +123,9 @@ def main():
         #df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
       #else:
-        df=load_data(url)
+        df0=load_data(url)
 
-    return df
+    return df0
   
   
 df=main() 
