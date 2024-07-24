@@ -57,7 +57,7 @@ def main():
     
       #st.write("File uploaded:", uploaded_file.name)
      # Handle different file types
-      if uploaded_file.name.endswith('.csv'):
+      #if uploaded_file.name.endswith('.csv'):
         dfS = []
         for uploaded_f in uploaded_file:
             d = pd.read_csv(uploaded_f)
