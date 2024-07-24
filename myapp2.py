@@ -144,6 +144,7 @@ if not state:
     df1=df.copy()
 else:
    df1=df[df['siteregion_crf'].isin(state)]
+   df=df[df['siteregion_crf'].isin(state)]
  
  
 dfsample=df[['siteregion_crf','bloodsample','urinesample',
