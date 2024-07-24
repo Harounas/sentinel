@@ -270,7 +270,7 @@ ax.set_ylabel('Value')
 plt.xticks(rotation=45)
 #ax.tight_layout()
 st.pyplot(fig)
-
+st.write(fig)
 dff= df.groupby(['hiv_rdt', 'siteregion_crf']).size().reset_index(name='Count')
 
 dfff=pd.merge(dff,dff.groupby(['siteregion_crf']).sum().reset_index(),on="siteregion_crf")
