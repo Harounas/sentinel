@@ -256,7 +256,7 @@ dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
 dfff['Total']='Total'
 fig,ax = plt.subplots(figsize=(15, 12))
 sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Date', ylabel='siteregion_crf')
-sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel='siteregion_crf')
+#sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel='siteregion_crf')
 #sns.set_theme(style='white', font_scale=3)
 ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
           fancybox=True, shadow=True, ncol=5)
@@ -342,7 +342,7 @@ if select_catcol0:
     dfff['Total']='Total'
     fig,ax = plt.subplots(figsize=(15, 12))
     sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue=select_catcol0[0],palette='Set1').set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
-    sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
+    #sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
 #sns.set_theme(style='white', font_scale=3)
     ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
           fancybox=True, shadow=True, ncol=5)
