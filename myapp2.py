@@ -79,7 +79,7 @@ def dataprocess(uploaded_file):
             return df0
         else:
            st.write("No files uploaded or files are empty.")
-           return pd.DataFrame()
+           return load_data(url)
     else:
      #st.write("Please upload files.")
         #df = pd.read_csv(uploaded_file)
