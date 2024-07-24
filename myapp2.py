@@ -42,8 +42,8 @@ token = st.sidebar.text_input("Input a token")
 
 
 #df0 = load_data(url)
-def main():
-    uploaded_file =  st.sidebar.file_uploader("Upload a file",accept_multiple_files=True, type="csv")
+def dataprocess(uploaded_file):
+    #uploaded_file =  st.sidebar.file_uploader("Upload a file",accept_multiple_files=True, type="csv")
     # If a file is uploaded
     if uploaded_file is not None:
         #st.write("File uploaded successfully!")
@@ -130,11 +130,18 @@ def main():
 
         return df0
   
-  
-df=main() 
+ 
 
 
+def main():
+    st.title('File Upload')
+    uploaded_file =  st.sidebar.file_uploader("Upload a file",accept_multiple_files=True, type="csv")
+    df = dataprocess(uploaded_file)
+    st.write("DataFrame:")
+    st.write(df)
 
+if __name__ == "__main__":
+    main()
    
 #df = conn.read(spreadsheet=url)
 df['date_crf'] = pd.to_datetime(df['date_crf'], errors='coerce', format='%Y-%m-%d')
