@@ -23,7 +23,7 @@ from column_names import replacements
 
 
 #url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
-url="https://docs.google.com/spreadsheets/d/1tDkXnZSyFfPo7z5pSEWDUxVSxHNk4iGLhNKXb60XPyU/edit?usp=sharing"
+url="https://docs.google.com/spreadsheets/d/1mMqW_iRtzPG26nl10dGxLwZXry8I49u0NBrMOekiULY/edit?usp=sharing"
 conn = st.connection("gsheets", type=GSheetsConnection)
 st.title("Data summary sentinel project")
 st.markdown("---")
