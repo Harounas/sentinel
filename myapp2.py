@@ -128,7 +128,7 @@ def main():
         st.write("No file uploaded.")
         df0=load_data(url)
 
-    return df0
+        return df0
   
   
 df=main() 
