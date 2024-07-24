@@ -35,7 +35,7 @@ st.markdown("---")
 def load_data(datapath):
     dataset = conn.read(spreadsheet=datapath)
     return dataset
-uploaded_file =  st.sidebar.file_uploader("Upload a file", accept_multiple_files=True,type=["txt", "csv", "xlsx"])
+uploaded_file =  st.file_uploader("Upload a file", accept_multiple_files=True,type=["txt", "csv", "xlsx"])
 # Text input widget for token
 token = st.sidebar.text_input("Input a token")
 #token = st.sidebar.text_input("Input a token")
