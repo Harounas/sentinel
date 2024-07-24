@@ -78,7 +78,7 @@ def dataprocess(uploaded_file):
             )
             return df0
         else:
-           st.write("No files uploaded or files are empt.")
+           st.write("No files uploaded or files are empty.")
            return load_data(url)
     else:
      #st.write("Please upload files.")
