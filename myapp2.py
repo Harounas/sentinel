@@ -138,7 +138,7 @@ def main():
     uploaded_file =  st.sidebar.file_uploader("Upload a file",accept_multiple_files=True, type="csv")
     df = dataprocess(uploaded_file)
     st.write("DataFrame:")
-    st.write(dfdf['date_crf'])
+    st.write(df['date_crf'])
 
 if __name__ == "__main__":
     main()
