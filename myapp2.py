@@ -123,6 +123,7 @@ def main():
         #df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
       #else:
+        st.write("No file uploaded.")
         df0=load_data(url)
 
     return df0
