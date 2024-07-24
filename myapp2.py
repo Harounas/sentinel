@@ -329,8 +329,42 @@ if select_out:
         
            
         
-select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
+select_catcol0=st.multiselect('Please select categorical/symptom column to make  a line plot:',df.select_dtypes(include='object').columns)
+if select_catcol0:
+    st.write("Selected categorical column is : ", select_catcol0[0])
+    dff= df.groupby(['date_crf', select_catcol0[0]]).size().reset_index(name='Count')
+#dff['Region of site']=dff['Region of site'].replace({'Ikorodu':'IKORODU','Abakaliki ':'Abakaliki','Abakaliki ':'Abakalik','Ebonyi ':'Ebonyi'})
 
+#dff= dff[(dff['LGA']=="IKORODU") | (dff['LGA'] == 'OWO') |(dff['LGA'] == 'Abakaliki')|(dff['LGA'] == 'Ebonyi')]
+#dff= dff[(dff['Region of site']=='IKORODU') | (dff['Region of site'] == 'Abakaliki')]
+    dff['date_crf'] =pd.to_datetime(dff['date_crf'] ).dt.strftime('%Y-%m-%d')
+    dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
+    dfff['Total']='Total'
+    fig,ax = plt.subplots(figsize=(15, 12))
+    sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue=select_catcol0[0],palette='Set1').set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
+    sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
+#sns.set_theme(style='white', font_scale=3)
+    ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
+          fancybox=True, shadow=True, ncol=5)
+# Remove the frame (border) around the plot
+#sns.gca().spines['top'].set_visible(False)
+#sns.gca().spines['right'].set_visible(False)
+#plt.gca().spines['bottom'].set_visible(False)
+#plt.gca().spines['left'].set_visible(False)
+#monthly_ticks = pd.date_range(start=dff['Date of visit (dd/mm/yyyy)'].iloc[0], end=dff['Date of visit (dd/mm/yyyy)'].iloc[-1],freq='d')  # Monthly intervals
+#plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
+
+    ax.tick_params(axis='x', labelsize=10)
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Value')
+#ax.set_title('Plot through Time with Custom X-axis Ticks')
+    plt.xticks(rotation=45)
+#ax.tight_layout()
+    st.pyplot(fig)
+
+
+
+select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
 if select_catcol:
     st.write("Selected categorical column is : ", select_catcol[0])
  
