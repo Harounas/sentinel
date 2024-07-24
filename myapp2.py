@@ -366,7 +366,17 @@ if select_numcol:
    st.write(f'Select number of bins: {selected_value}')
    ax.hist(dfs[select_numcol[0]], bins=selected_value, edgecolor='black')
    st.pyplot(fig)
- 
+   buf2 = io.BytesIO()
+   fig.savefig(buf2, format='png')
+   buf2.seek(0)
+
+# Create a download button for the plot
+   st.download_button(
+   label="Download Plot",
+    data=buf2,
+    file_name="plot_hist.png",
+    mime="image/png"
+)
 else:
     st.info('Please select a numerical column using the dropdown above.')
 
@@ -405,15 +415,15 @@ if select_catcol and select_numcol:
 # Display the plot in Streamlit app
    st.pyplot(fig)
    #st.write(dfs.loc[dfs[select_catcol[0]]==dfs[select_catcol[0]].value_counts().index.tolist()[0]]['Sex'])
-   buf2 = io.BytesIO()
-   fig.savefig(buf2, format='png')
-   buf2.seek(0)
+   buf3 = io.BytesIO()
+   fig.savefig(buf3, format='png')
+   buf3.seek(0)
 
 # Create a download button for the plot
    st.download_button(
    label="Download Plot",
-    data=buf2,
-    file_name="plot_bar.png",
+    data=buf3,
+    file_name="plot_box.png",
     mime="image/png"
 )
    # Perform Mann-Whitney U test
