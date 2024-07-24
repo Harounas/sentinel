@@ -91,11 +91,11 @@ def main():
        # df = uploaded_file.read().decode("utf-8")
         #st.write("Text file content:")
         
-    st.sidebar.title("Please  upload your own file  or Token")      
+     st.sidebar.title("Please  upload your own file  or Token")      
     
-    if uploaded_file is None:
+     if uploaded_file is None:
     # If a token is provided
-     if token:
+      if token:
         #st.sidebar.header("Token provided:", token)
         data = {
     'token':token,
@@ -122,7 +122,7 @@ def main():
 
         df = pd.read_csv(StringIO(r.text),  low_memory=False)
        # st.write(df.head())
-     else:
+      else:
         df=load_data(url)
 
     return df
