@@ -123,9 +123,9 @@ df=df.replace({'Ondo':'OWO','Lagos':'IKORODU','Ebonyi':'ABAKALIKI','Edo':'IRRUA'
 col1, col2=st.sidebar.columns((2))
 #Startdate=pd.to_datetime(df['date_crf']).min()
 df['siteregion_crf']=df['siteregion_crf'].replace({1:'IKORODU',4:'ABAKALIKI',2:'OWO',3:'IRRUA'})
-for col, replacements in replacements.items():
+for col, replacement in replacements.items():
     if col in df.columns:
-        df[col] = df[col].replace(replacements)
+        df[col] = df[col].replace(replacement)
 Enddate=pd.to_datetime(df['date_crf']).max()
 Startdate=  pd.to_datetime(Enddate - timedelta(weeks=2))
 with col1:
