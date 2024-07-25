@@ -312,18 +312,13 @@ if time_range > 60:
 else:
     freq = 'd'  # Daily intervals
 
-monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq=freq).map(pd.Timestamp.to_pydatetime)  # Monthly intervals
-#plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
+monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq=freq)
+plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
 
-# Set major ticks format
-#ax.set_xticks(time_range.to_pydatetime())
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-plt.xticks(rotation=90)
-# Set ticks and labels
 
-#ax.tick_params(axis='x', labelsize=15)
-#ax.set_xlabel('Date')
-#ax.set_ylabel('Value')
+ax.tick_params(axis='x', labelsize=15)
+ax.set_xlabel('Date')
+ax.set_ylabel('Value')
 
 #plt.xticks(rotation=90)
 #ax.tight_layout()
