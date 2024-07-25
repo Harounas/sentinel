@@ -310,17 +310,21 @@ if time_range > 60:
     freq = 'M'  # Monthly intervals
 else:
     freq = 'd'  # Daily intervals
-
+time_range.to_pydatetime()
 monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq=freq).map(pd.Timestamp.to_pydatetime)  # Monthly intervals
-plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
+#plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
 
+# Set major ticks format
+ax.set_xticks(date_range)
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+plt.xticks(rotation=90)
 # Set ticks and labels
 
-ax.tick_params(axis='x', labelsize=15)
-ax.set_xlabel('Date')
-ax.set_ylabel('Value')
-#ax.set_title('Plot through Time with Custom X-axis Ticks')
-plt.xticks(rotation=90)
+#ax.tick_params(axis='x', labelsize=15)
+#ax.set_xlabel('Date')
+#ax.set_ylabel('Value')
+
+#plt.xticks(rotation=90)
 #ax.tight_layout()
 st.pyplot(fig)
 # Save the plot to a file-like object
