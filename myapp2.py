@@ -306,6 +306,7 @@ ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
 start_date = pd.to_datetime(dff['date_crf'].iloc[0])
 end_date = pd.to_datetime(dff['date_crf'].iloc[-1])
 time_range = (end_date - start_date).days
+freq='d'
 if time_range > 60:
     freq = 'M'  # Monthly intervals
 else:
@@ -315,7 +316,7 @@ monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf']
 #plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
 
 # Set major ticks format
-ax.set_xticks(time_range)
+ax.set_xticks(time_range.to_pydatetime())
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
 plt.xticks(rotation=90)
 # Set ticks and labels
