@@ -314,7 +314,8 @@ st.pyplot(fig)
 buf1 = io.BytesIO()
 fig.savefig(buf1, format='png')
 buf1.seek(0)
-st.write(dff['Date of visit (dd/mm/yyyy)'].iloc[-1]-dff['Date of visit (dd/mm/yyyy)'].iloc[0])
+time_range = (end_date - start_date).days
+st.write(time_range)
 # Create a download button for the plot
 st.download_button(
     label="Download Plot",
