@@ -293,21 +293,7 @@ dfff['Total']='Total'
 fig,ax = plt.subplots(figsize=(15, 12))
 sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Date', ylabel='siteregion_crf')
 # Determine the timeframe of the data
-timeframe = pd.to_datetime(dfff['date_crf'].max()) - pd.to_datetime(dfff['date_crf'].min())
 
-# Resample the data based on the timeframe
-if timeframe.days <= 60:
-    # Use daily data
-    plot_data = dfff
-else:
-    # Use monthly data
-    dff['date_crf'] = pd.to_datetime(dff['date_crf'])
-    plot_data = dff.resample('M', on='date_crf').sum().reset_index()
-
-# Create the plot
-fig, ax = plt.subplots(figsize=(15, 12))
-sns.lineplot(x="date_crf", y="Count_x", data=plot_data, hue='siteregion_crf', palette='Set1').set(title=' ', xlabel='Date', ylabel='siteregion_crf')
-plt.show()
 #sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel='siteregion_crf')
 #sns.set_theme(style='white', font_scale=3)
 ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
