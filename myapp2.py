@@ -300,14 +300,15 @@ ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
 #sns.gca().spines['right'].set_visible(False)
 #plt.gca().spines['bottom'].set_visible(False)
 #plt.gca().spines['left'].set_visible(False)
+# Calculate time range in days
+time_range = (end_date - start_date).days
 start_date = pd.to_datetime(dff['date_crf'].iloc[0])
 end_date = pd.to_datetime(dff['date_crf'].iloc[-1])
 if time_range > 60:
     freq = 'M'  # Monthly intervals
 else:
     freq = 'D'  # Daily intervals
-# Calculate time range in days
-time_range = (end_date - start_date).days
+
 monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq=freq)  # Monthly intervals
 plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
 
