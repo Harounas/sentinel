@@ -310,7 +310,7 @@ if time_range > 60:
     freq = 'M'  # Monthly intervals
 else:
     freq = 'd'  # Daily intervals
-time_range.to_pydatetime()
+time_range=time_range.to_pydatetime()
 monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq=freq).map(pd.Timestamp.to_pydatetime)  # Monthly intervals
 #plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
 
