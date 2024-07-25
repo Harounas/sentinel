@@ -303,9 +303,9 @@ ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
 #plt.gca().spines['left'].set_visible(False)
 # Calculate time range in days
 
-start_date = pd.to_datetime(dff['date_crf'].iloc[0])
-end_date = pd.to_datetime(dff['date_crf'].iloc[-1])
-time_range = (end_date - start_date).days
+start_date = dff['date_crf'].iloc[0]
+end_date = dff['date_crf'].iloc[-1]
+time_range = (pd.to_datetime(end_date) -pd.to_datetime(start_date)).days
 freq='d'
 if time_range > 60:
     freq = 'M'  # Monthly intervals
