@@ -300,8 +300,16 @@ ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
 #sns.gca().spines['right'].set_visible(False)
 #plt.gca().spines['bottom'].set_visible(False)
 #plt.gca().spines['left'].set_visible(False)
-#monthly_ticks = pd.date_range(start=dff['Date of visit (dd/mm/yyyy)'].iloc[0], end=dff['Date of visit (dd/mm/yyyy)'].iloc[-1],freq='d')  # Monthly intervals
-#plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
+start_date = pd.to_datetime(dff['date_crf'].iloc[0])
+end_date = pd.to_datetime(dff['date_crf'].iloc[-1])
+if time_range > 60:
+    freq = 'M'  # Monthly intervals
+else:
+    freq = 'D'  # Daily intervals
+# Calculate time range in days
+time_range = (end_date - start_date).days
+monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq=freq)  # Monthly intervals
+plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
 
 ax.tick_params(axis='x', labelsize=15)
 ax.set_xlabel('Date')
@@ -314,16 +322,7 @@ st.pyplot(fig)
 buf1 = io.BytesIO()
 fig.savefig(buf1, format='png')
 buf1.seek(0)
-start_date = pd.to_datetime(dff['date_crf'].iloc[0])
-end_date = pd.to_datetime(dff['date_crf'].iloc[-1])
 
-# Ensure start_date and end_date are datetime objects
-st.write(type(start_date), type(end_date))  # Should show <class 'pandas._libs.tslibs.timestamps.Timestamp'>
-
-# Calculate time range in days
-time_range = (end_date - start_date).days
-
-st.write(type(end_date))
 # Create a download button for the plot
 st.download_button(
     label="Download Plot",
