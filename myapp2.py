@@ -319,15 +319,13 @@ else:
     locator = mdates.DayLocator()  # Daily intervals
     date_fmt = '%Y-%m-%d'
  # Set major ticks format
-ax.xaxis.set_major_locator(locator)
-ax.xaxis.set_major_formatter(mdates.DateFormatter(date_fmt))  
+#ax.xaxis.set_major_locator(locator)
+#ax.xaxis.set_major_formatter(mdates.DateFormatter(date_fmt))  
 
-ax.set_xlim(start_date, end_date)
-#monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq=freq)
-#plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
-#date_range = pd.date_range(start=start_date, end=end_date, freq=freq)
-#ax.set_xticks(date_range)
-#ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+
+monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq='d')
+plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
+
 ax.tick_params(axis='x', labelsize=15)
 ax.set_xlabel('Date')
 ax.set_ylabel('Value')
