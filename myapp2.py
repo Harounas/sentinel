@@ -312,11 +312,8 @@ else:
     freq = 'd'  # Daily intervals
 
 monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq=freq).map(pd.Timestamp.to_pydatetime)  # Monthly intervals
-#plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
-tick_values = [mdates.date2num(date) for date in monthly_ticks]
-# Generate labels for ticks
-labels = [date.strftime('%Y-%m-%d') for date in monthly_ticks]
-plt.xticks(ticks=tick_values, labels=labels, rotation=90)
+plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
+
 # Set ticks and labels
 
 ax.tick_params(axis='x', labelsize=15)
