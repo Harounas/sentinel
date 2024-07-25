@@ -322,16 +322,16 @@ else:
 #ax.xaxis.set_major_locator(locator)
 #ax.xaxis.set_major_formatter(mdates.DateFormatter(date_fmt))  
 
-#monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq='d')  # Monthly intervals
-monthly_ticks = pd.date_range(start=dff['date_crf'].min(), end=dff['date_crf'].max(), freq='MS')  # 'MS' for Month Start
+monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq='d')  # Monthly intervals
+
 plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
 
 #monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq='d')
 #plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
 
-ax.tick_params(axis='x', labelsize=15)
-ax.set_xlabel('Date')
-ax.set_ylabel('Value')
+#ax.tick_params(axis='x', labelsize=15)
+#ax.set_xlabel('Date')
+#ax.set_ylabel('Value')
 
 #plt.xticks(rotation=90)
 #ax.tight_layout()
