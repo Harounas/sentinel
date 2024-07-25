@@ -393,7 +393,7 @@ if select_catcol0:
     ax.set_xlabel('Date')
     ax.set_ylabel('Value')
 #ax.set_title('Plot through Time with Custom X-axis Ticks')
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=90)
 #ax.tight_layout()
     st.pyplot(fig)
 
