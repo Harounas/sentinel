@@ -303,11 +303,11 @@ ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
 #monthly_ticks = pd.date_range(start=dff['Date of visit (dd/mm/yyyy)'].iloc[0], end=dff['Date of visit (dd/mm/yyyy)'].iloc[-1],freq='d')  # Monthly intervals
 #plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
 
-ax.tick_params(axis='x', labelsize=10)
+ax.tick_params(axis='x', labelsize=15)
 ax.set_xlabel('Date')
 ax.set_ylabel('Value')
 #ax.set_title('Plot through Time with Custom X-axis Ticks')
-plt.xticks(rotation=45)
+plt.xticks(rotation=90)
 #ax.tight_layout()
 st.pyplot(fig)
 # Save the plot to a file-like object
@@ -389,7 +389,7 @@ if select_catcol0:
 #monthly_ticks = pd.date_range(start=dff['Date of visit (dd/mm/yyyy)'].iloc[0], end=dff['Date of visit (dd/mm/yyyy)'].iloc[-1],freq='d')  # Monthly intervals
 #plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
 
-    ax.tick_params(axis='x', labelsize=10)
+    ax.tick_params(axis='x', labelsize=15)
     ax.set_xlabel('Date')
     ax.set_ylabel('Value')
 #ax.set_title('Plot through Time with Custom X-axis Ticks')
