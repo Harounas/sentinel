@@ -302,7 +302,7 @@ ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
 #plt.gca().spines['bottom'].set_visible(False)
 #plt.gca().spines['left'].set_visible(False)
 # Calculate time range in days
-
+"""
 start_date = dff['date_crf'].iloc[0]
 end_date = dff['date_crf'].iloc[-1]
 time_range = (pd.to_datetime(end_date) -pd.to_datetime(start_date)).days
@@ -321,7 +321,7 @@ else:
  # Set major ticks format
 #ax.xaxis.set_major_locator(locator)
 #ax.xaxis.set_major_formatter(mdates.DateFormatter(date_fmt))  
-
+"""
 monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq='d')  # Monthly intervals
 plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
 
