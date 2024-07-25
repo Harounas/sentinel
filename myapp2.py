@@ -315,7 +315,7 @@ monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf']
 #plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
 
 # Set major ticks format
-ax.set_xticks(date_range)
+ax.set_xticks(time_range)
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
 plt.xticks(rotation=90)
 # Set ticks and labels
