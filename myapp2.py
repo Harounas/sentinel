@@ -314,8 +314,8 @@ st.pyplot(fig)
 buf1 = io.BytesIO()
 fig.savefig(buf1, format='png')
 buf1.seek(0)
-start_date = dff['Date of visit (dd/mm/yyyy)'].iloc[0]
-end_date = dff['Date of visit (dd/mm/yyyy)'].iloc[-1]
+start_date = dff['date_crf'].iloc[0]
+end_date = dff['date_crf'].iloc[-1]
 
 # Ensure start_date and end_date are datetime objects
 print(type(start_date), type(end_date))  # Should show <class 'pandas._libs.tslibs.timestamps.Timestamp'>
