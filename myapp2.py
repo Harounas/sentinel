@@ -318,7 +318,7 @@ start_date = dff['date_crf'].iloc[0]
 end_date = dff['date_crf'].iloc[-1]
 
 # Ensure start_date and end_date are datetime objects
-print(type(start_date), type(end_date))  # Should show <class 'pandas._libs.tslibs.timestamps.Timestamp'>
+st.write(type(start_date), type(end_date))  # Should show <class 'pandas._libs.tslibs.timestamps.Timestamp'>
 
 # Calculate time range in days
 time_range = (end_date - start_date).days
