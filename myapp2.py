@@ -293,7 +293,8 @@ dfff['Total']='Total'
 fig,ax = plt.subplots(figsize=(15, 12))
 sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Date', ylabel='siteregion_crf')
 # Determine the timeframe of the data
-
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+ax.xaxis.set_major_locator(mdates.MonthLocator())  #
 #sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel='siteregion_crf')
 #sns.set_theme(style='white', font_scale=3)
 ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
