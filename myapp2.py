@@ -631,8 +631,8 @@ if np.any(np.isnan(X_transformed)) or np.any(np.isinf(X_transformed)):
     st.error("Feature matrix contains NaN or infinite values.")
 
 # Check for NaNs or infinities in y
-if np.any(np.isnan(y)) or np.any(np.isinf(y)):
-    st.error("Target vector contains NaN or infinite values.")
+#if np.any(np.isnan(y)) or np.any(np.isinf(y)):
+   # st.error("Target vector contains NaN or infinite values.")
 
 y = pd.Series(y).ravel()  # Flatten y if it's multi-dimensional
 if len(X_transformed) != len(y):
