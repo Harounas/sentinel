@@ -649,6 +649,47 @@ else:
 
 # Merge normalized continuous features with dummy variables
 X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1)
+
+# Convert to NumPy array for compatibility
+X_transformed = X_transformed.to_numpy()
+
+# Ensure proper formatting of y
+y = pd.Series(y).to_numpy()
+
+# Drop-down menu for feature selection method
+method = st.selectbox("Choose feature selection method", ["SelectKBest", "RFE"])
+
+# Determine appropriate score function based on the problem type
+if method == "SelectKBest":
+    if is_classification:
+        score_func = f_classif
+    else:
+        score_func = f_regression
+    
+    k = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=2)
+    selector = SelectKBest(score_func, k=k)
+    X_selected = selector.fit_transform(X_transformed, y)
+    selected_features = X_transformed.columns[selector.get_support()]
+    st.write(f"Selected features: {', '.join(selected_features)}")
+    
+elif method == "RFE":
+    if is_classification:
+        estimator = LogisticRegression(max_iter=1000)
+    else:
+        estimator = LinearRegression()
+    
+    n_features = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=2)
+    selector = RFE(estimator, n_features_to_select=n_features)
+    X_selected = selector.fit_transform(X_transformed, y)
+    selected_features = X_transformed.columns[selector.support_]
+    st.write(f"Selected features: {', '.join(selected_features)}")
+
+# Display transformed features
+st.write("Transformed Features")
+st.dataframe(pd.DataFrame(X_selected, columns=selected_features))
+"""
+# Merge normalized continuous features with dummy variables
+X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1)
 # Ensure proper formatting of y
 y = pd.Series(y).ravel()
 
@@ -685,8 +726,7 @@ elif method == "RFE":
 # Display transformed features
 st.write("Transformed Features")
 st.dataframe(pd.DataFrame(X_selected, columns=selected_features))
-
-
+"""
 
 
 
