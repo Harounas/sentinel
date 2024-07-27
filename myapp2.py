@@ -618,7 +618,7 @@ default_independent = [var for var in default_independent if var in available_in
 independent_variables = st.multiselect("Choose independent variables", options=available_independent_vars, default=default_independent)
 X = df[independent_variables]
 y = df[target_variable]
-st.write(X.head(),y.head())
+st.write(X.values.shpe,y.values.shape)
 # Check if y is categorical or numerical
 if y.dtype == 'object':
     encoder = LabelEncoder()
