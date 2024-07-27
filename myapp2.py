@@ -655,7 +655,7 @@ X_transformed = X_transformed.to_numpy()
 
 # Ensure proper formatting of y
 y = pd.Series(y).to_numpy()
-
+st.write(X_transformed.shape,y.shape)
 # Drop-down menu for feature selection method
 method = st.selectbox("Choose feature selection method", ["SelectKBest", "RFE"])
 
