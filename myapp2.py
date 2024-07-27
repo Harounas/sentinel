@@ -621,7 +621,7 @@ y = df[target_variable]
 # Check if y is categorical or numerical
 if y.dtype == 'object':
     encoder = LabelEncoder()
-    y = encoder.fit_transform(y)
+    #y = encoder.fit_transform(y)
     is_classification = True
 else:
     y=y
