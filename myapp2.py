@@ -603,7 +603,14 @@ target_variable = st.selectbox("Choose the dependent variable", options=df.colum
 independent_variables = st.multiselect("Choose independent variables", options=[col for col in df.columns if col != target_variable])
 X = df[independent_variables]
 y = df[target_variable]
-
+# Check if y is categorical or numerical
+if y.dtype == 'object':
+    encoder = LabelEncoder()
+    y_encoded = encoder.fit_transform(y)
+    is_classification = True
+else:
+    y_encoded = y
+    is_classification = False
 # Identify continuous and categorical features
 continuous_features = list(X.select_dtypes(include=['float64']).columns)
 categorical_features = list(X.select_dtypes(include=['object']).columns)
