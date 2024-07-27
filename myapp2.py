@@ -626,6 +626,24 @@ else:
 
 # Merge normalized continuous features with dummy variables
 X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1)
+# Check for NaNs or infinities in X_transformed
+if np.any(np.isnan(X_transformed)) or np.any(np.isinf(X_transformed)):
+    st.error("Feature matrix contains NaN or infinite values.")
+
+# Check for NaNs or infinities in y
+if np.any(np.isnan(y)) or np.any(np.isinf(y)):
+    st.error("Target vector contains NaN or infinite values.")
+
+y = pd.Series(y).ravel()  # Flatten y if it's multi-dimensional
+if len(X_transformed) != len(y):
+    st.error("Feature matrix and target vector have different number of samples.")
+from sklearn.utils import check_array, check_y
+
+try:
+    X_transformed = check_array(X_transformed, force_all_finite=True)
+    y = check_y(y)
+except ValueError as e:
+    st.error(f"Data validation error: {e}")
 
 # Drop-down menu for feature selection method
 method = st.selectbox("Choose feature selection method", ["SelectKBest", "RFE"])
