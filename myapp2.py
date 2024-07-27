@@ -597,10 +597,12 @@ if select_col11 and select_col22:
 st.title("Feature Selection with Streamlit")
 df = df.dropna(axis=1, how='all')
 # Choose dependent variable
-target_variable = st.selectbox("Choose the dependent variable", options=df.columns)
+default_target = df.columns[0]  # First column as default target variable
+default_independent = [col for col in df.columns if col != default_target]
+target_variable = st.selectbox("Choose the dependent variable", options=df.columns,index=df.columns.get_loc(default_target))
 
 # Choose independent variables
-independent_variables = st.multiselect("Choose independent variables", options=[col for col in df.columns if col != target_variable])
+independent_variables = st.multiselect("Choose independent variables", options=[col for col in df.columns if col != target_variable],default=default_independent)
 X = df[independent_variables]
 y = df[target_variable]
 # Check if y is categorical or numerical
