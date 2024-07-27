@@ -637,20 +637,6 @@ X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1)
 # Ensure proper formatting of y
 y = pd.Series(y).ravel()
 
-# Validate data
-if np.any(np.isnan(X_transformed)) or np.any(np.isinf(X_transformed)):
-    st.error("Feature matrix contains NaN or infinite values.")
-elif np.any(np.isnan(y)) or np.any(np.isinf(y)):
-    st.error("Target vector contains NaN or infinite values.")
-elif len(X_transformed) != len(y):
-    st.error("Feature matrix and target vector have different number of samples.")
-else:
-    try:
-        X_transformed = check_array(X_transformed, force_all_finite=True)
-    except ValueError as e:
-        st.error(f"Data validation error: {e}")
-        X_transformed = pd.DataFrame()
-        y = pd.Series()
 
 # Drop-down menu for feature selection method
 method = st.selectbox("Choose feature selection method", ["SelectKBest", "RFE"])
