@@ -606,20 +606,26 @@ y = df[target_variable]
 # Identify continuous and categorical features
 continuous_features = list(X.select_dtypes(include=['float64']).columns)
 categorical_features = list(X.select_dtypes(include=['object']).columns)
-Xc=X[continuous_features]
-Xc = Xc.dropna(axis=1, how='all')
-Xc=Xc.fillna(Xc.mean())
-Xn=X[categorical_features].fillna(X[categorical_features].mode().iloc[0])
 
-scaler = StandardScaler()
-Xc_normalized = pd.DataFrame(scaler.fit_transform(Xc), columns=Xc.columns)
+# Handle empty continuous features
+if continuous_features:
+    Xc = X[continuous_features]
+    Xc = Xc.dropna(axis=1, how='all')
+    Xc = Xc.fillna(Xc.mean())
+    scaler = StandardScaler()
+    Xc_normalized = pd.DataFrame(scaler.fit_transform(Xc), columns=Xc.columns)
+else:
+    Xc_normalized = pd.DataFrame()
 
-# Transform categorical features to dummy variables
-Xn_dummies = pd.get_dummies(Xn, drop_first=True)
+# Handle empty categorical features
+if categorical_features:
+    Xn = X[categorical_features].fillna(X[categorical_features].mode().iloc[0])
+    Xn_dummies = pd.get_dummies(Xn, drop_first=True)
+else:
+    Xn_dummies = pd.DataFrame()
 
 # Merge normalized continuous features with dummy variables
 X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1)
-
 
 # Drop-down menu for feature selection method
 method = st.selectbox("Choose feature selection method", ["SelectKBest", "RFE"])
