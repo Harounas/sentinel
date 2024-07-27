@@ -618,10 +618,11 @@ default_independent = [var for var in default_independent if var in available_in
 independent_variables = st.multiselect("Choose independent variables", options=available_independent_vars, default=default_independent)
 X = df[independent_variables]
 y = df[target_variable]
+st.write(X.head().y.head())
 # Check if y is categorical or numerical
 if y.dtype == 'object':
     encoder = LabelEncoder()
-    #y = encoder.fit_transform(y)
+    y = encoder.fit_transform(y)
     is_classification = True
 else:
     y=y
