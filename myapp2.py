@@ -23,7 +23,7 @@ from column_names import replacements
 import matplotlib.dates as mdates
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.feature_selection import SelectKBest, f_classif, chi2, f_regression, RFE
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression,LinearRegression
 from sklearn.impute import SimpleImputer
 from sklearn.utils import check_array
 
