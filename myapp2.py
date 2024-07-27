@@ -593,7 +593,68 @@ if select_col11 and select_col22:
 
 
 
+st.title("Feature Selection with Streamlit")
 
+# Choose dependent variable
+target_variable = st.selectbox("Choose the dependent variable", options=df.columns)
+
+# Choose independent variables
+independent_variables = st.multiselect("Choose independent variables", options=[col for col in df.columns if col != target_variable])
+
+# Separate features and target
+X = df[independent_variables]
+y = df[target_variable]
+
+# Identify continuous and categorical features
+continuous_features = list(X.select_dtypes(include=['float64']).columns)
+categorical_features = list(X.select_dtypes(include=['object']).columns)
+Xc=X[continuous_features]
+Xc = Xc.dropna(axis=1, how='all')
+Xc=Xc.fillna(Xc.mean())
+Xn=X[categorical_features].fillna(X[categorical_features].mode().iloc[0])
+
+scaler = StandardScaler()
+Xc_normalized = pd.DataFrame(scaler.fit_transform(Xc), columns=Xc.columns)
+
+# Transform categorical features to dummy variables
+Xn_dummies = pd.get_dummies(Xn, drop_first=True)
+
+# Merge normalized continuous features with dummy variables
+X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1)
+
+
+# Drop-down menu for feature selection method
+method = st.selectbox("Choose feature selection method", ["SelectKBest", "RFE"])
+
+# Determine appropriate score function based on the problem type (classification or regression)
+is_classification = y.dtype == 'int'  # Assuming integer target for classification
+
+# Apply feature selection based on user choice
+if method == "SelectKBest":
+    if is_classification:
+        # Use f_classif for classification problems
+        score_func = f_classif
+    else:
+        # Use f_regression for regression problems
+        score_func = f_regression
+    
+    k = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=2)
+    selector = SelectKBest(score_func, k=k)
+    X_selected = selector.fit_transform(X_transformed, y)
+    selected_features = X_transformed.columns[selector.get_support()]
+    st.write(f"Selected features: {', '.join(selected_features)}")
+    
+elif method == "RFE":
+    estimator = LogisticRegression(max_iter=1000)
+    n_features = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=2)
+    selector = RFE(estimator, n_features_to_select=n_features)
+    X_selected = selector.fit_transform(X_transformed, y)
+    selected_features = X_transformed.columns[selector.support_]
+    st.write(f"Selected features: {', '.join(selected_features)}")
+
+# Display transformed features
+st.write("Transformed Features")
+st.dataframe(pd.DataFrame(X_selected, columns=selected_features))
 
 
 
