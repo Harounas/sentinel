@@ -634,7 +634,7 @@ categorical_features = list(X.select_dtypes(include=['object']).columns)
 # Handle empty continuous features
 if continuous_features:
     Xc = X[continuous_features]
-    Xc = Xc.dropna(axis=1, how='all')
+    #Xc = Xc.dropna(axis=1, how='all')
     Xc = Xc.fillna(Xc.mean())
     scaler = StandardScaler()
     Xc_normalized = pd.DataFrame(scaler.fit_transform(Xc), columns=Xc.columns)
