@@ -810,6 +810,8 @@ if st.button("Fit Model (with VIF filter)", key="fit_model_vif"):
         plt.grid(True)
         st.pyplot(plt)
         
+       # st.write("Filtered Features based on p-value:")
+       # st.dataframe(X_filtered_with_const[importantv.index])
 """
 # Merge normalized continuous features with dummy variables
 X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1)
@@ -850,6 +852,11 @@ elif method == "RFE":
 st.write("Transformed Features")
 st.dataframe(pd.DataFrame(X_selected, columns=selected_features))
 """
+
+
+
+
+
 
 
 
