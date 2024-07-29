@@ -647,9 +647,9 @@ if categorical_features:
     Xn_dummies = pd.get_dummies(Xn, drop_first=True)
 else:
     Xn_dummies = pd.DataFrame()
-st.write("Duplicates in Xc_normalized:", Xc_normalized.duplicated().sum())
+    
 st.write("Duplicates in Xn_dummies:", Xn_dummies.duplicated().sum())
-
+assert Xc_normalized.index.equals(Xn_dummies.index)
 # Merge normalized continuous features with dummy variables
 X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1)
 st.write(Xc_normalized.values.shape,Xn_dummies.values.shape)
