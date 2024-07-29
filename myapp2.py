@@ -634,55 +634,50 @@ categorical_features = list(X.select_dtypes(include=['object']).columns)
 # Handle empty continuous features
 if continuous_features:
     Xc = X[continuous_features]
-    #Xc = Xc.dropna(axis=1, how='all')
+    Xc = Xc.dropna(axis=1, how='all')
     Xc = Xc.fillna(Xc.mean())
     scaler = StandardScaler()
-    Xc_normalized = pd.DataFrame(scaler.fit_transform(Xc), columns=Xc.columns)
+    Xc_normalized = pd.DataFrame(scaler.fit_transform(Xc), columns=Xc.columns, index=Xc.index)
 else:
-    Xc_normalized = pd.DataFrame()
+    Xc_normalized = pd.DataFrame(index=X.index)
 
 # Handle empty categorical features
 if categorical_features:
     Xn = X[categorical_features].fillna(X[categorical_features].mode().iloc[0])
-    Xn_dummies = pd.get_dummies(Xn, drop_first=True)
+    Xn_dummies = pd.get_dummies(Xn, drop_first=True, prefix=categorical_features, prefix_sep='_')
+    Xn_dummies = Xn_dummies.reindex(index=X.index)  # Ensure index alignment
 else:
-    Xn_dummies = pd.DataFrame()
-    
-st.write("Duplicates in Xn_dummies:", Xn_dummies.duplicated().sum())
+    Xn_dummies = pd.DataFrame(index=X.index)
 
 # Merge normalized continuous features with dummy variables
-X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1)
-st.write(Xc_normalized.values.shape,Xn_dummies.values.shape)
-# Convert to NumPy array for compatibility
-X_transformed = X_transformed.to_numpy()
+X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1, join='inner')
 
-# Ensure proper formatting of y
-y = pd.Series(y).to_numpy()
-st.write(X_transformed.shape,y.shape)
+# Ensure that y has the same index as X_transformed
+y = y.loc[X_transformed.index]
+
 # Drop-down menu for feature selection method
 method = st.selectbox("Choose feature selection method", ["SelectKBest", "RFE"])
 
-# Determine appropriate score function based on the problem type
+# Default number of features to keep
+default_k = X_transformed.shape[1] if X_transformed.shape[1] > 0 else 1
+
+# Apply feature selection based on user choice
 if method == "SelectKBest":
     if is_classification:
         score_func = f_classif
     else:
         score_func = f_regression
     
-    k = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=2)
+    k = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
     selector = SelectKBest(score_func, k=k)
     X_selected = selector.fit_transform(X_transformed, y)
     selected_features = X_transformed.columns[selector.get_support()]
     st.write(f"Selected features: {', '.join(selected_features)}")
     
 elif method == "RFE":
-    if is_classification:
-        estimator = LogisticRegression(max_iter=1000)
-    else:
-        estimator = LinearRegression()
-    
-    n_features = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=2)
-    selector = RFE(estimator, n_features_to_select=n_features)
+    estimator = LogisticRegression(max_iter=1000) if is_classification else None
+    n_features = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
+    selector = RFE(estimator, n_features_to_select=n_features) if is_classification else RFE(estimator=None, n_features_to_select=n_features)
     X_selected = selector.fit_transform(X_transformed, y)
     selected_features = X_transformed.columns[selector.support_]
     st.write(f"Selected features: {', '.join(selected_features)}")
