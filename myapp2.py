@@ -604,7 +604,7 @@ df = df.dropna(axis=1, how='all')
 # Choose independent variables
 #independent_variables = st.multiselect("Choose independent variables", options=[col for col in df.columns if col != target_variable],default=default_independent)
 # Default selection
-default_target = df.columns[0]  # First column as default target variable
+default_target = df.columns[5]  # First column as default target variable
 default_independent = [col for col in df.columns if col != default_target]  # All other columns as default independent variables
 
 # Choose dependent variable
