@@ -729,7 +729,86 @@ elif method == "RFE":
 st.write("Transformed Features")
 st.dataframe(pd.DataFrame(X_selected, columns=selected_features))
 
+def calc_vif(X_train):
+    """Calculate Variance Inflation Factor (VIF) for each feature in X_train."""
+    vif = pd.DataFrame()
+    vif["variables"] = X_train.columns
+    vif["VIF"] = [variance_inflation_factor(X_train.values, i) for i in range(X_train.shape[1])]
+    return vif
+    
 
+
+
+# Calculate and display VIF
+vif_df = calc_vif(X_transformed)
+
+
+# Add drop-down for VIF threshold
+vif_threshold = st.slider("Select VIF Threshold", min_value=1, max_value=10, value=2)
+features_to_keep = vif_df[vif_df['VIF'] < vif_threshold]['variables'].tolist()
+st.write(f"Features with VIF < {vif_threshold}: {features_to_keep}")
+
+X_filtered = X_transformed[features_to_keep]
+
+# Add dropdown for p-value threshold
+p_value_threshold = st.slider("Select p-value Threshold", min_value=0.01, max_value=0.1, value=0.05)
+
+
+        
+        
+# Fit OLS or logistic regression model
+if st.button("Fit Model (with VIF filter)", key="fit_model_vif"):
+    X_filtered_with_const = sm.add_constant(X_filtered)
+
+    if is_classification:
+        # Fit logistic regression model
+        logit_model = sm.Logit(y, X_filtered_with_const)
+        logit_result = logit_model.fit()
+        st.write(logit_result.summary())
+        
+        # Filter features based on p-value
+        importantv = pd.DataFrame(logit_result.summary2().tables[1])
+        importantv = importantv.loc[(importantv['P>|z|'] < p_value_threshold)]
+       
+        # Create DataFrame for feature importance
+        feat_importance = pd.DataFrame(importantv.index.tolist(), columns=["feature"])
+        feat_importance["importance"] = abs(importantv['Coef.'].values)
+        feat_importance = feat_importance.sort_values(by="importance", ascending=True)
+        st.write(f"Features with p-value < {p_value_threshold}: {feat_importance['feature'].tolist()}")
+        # Plot feature importance
+        plt.figure(figsize=(10, 8))
+        ax = feat_importance.plot.barh(x="feature", y="importance", color='skyblue', legend=False)
+        ax.set_xlabel('Absolute Coefficient')
+        ax.set_title('Feature Importance')
+        plt.gca().invert_yaxis()  # Invert y-axis to show most important features at the top
+        plt.grid(True)
+        st.pyplot(plt)
+        
+   
+    
+    else:
+        # Fit OLS model
+        ols_model = sm.OLS(y, X_filtered_with_const)
+        ols_result = ols_model.fit()
+        st.write(ols_result.summary())
+        
+        # Filter features based on p-value
+        importantv = pd.DataFrame(ols_result.summary2().tables[1])
+        importantv = importantv.loc[(importantv['P>|t|'] < p_value_threshold)]
+        
+        # Create DataFrame for feature importance
+        feat_importance = pd.DataFrame(importantv.index.tolist(), columns=["feature"])
+        feat_importance["importance"] = abs(importantv['Coef.'].values)
+        feat_importance = feat_importance.sort_values(by="importance", ascending=True)
+        st.write(f"Features with p-value < {p_value_threshold}: {feat_importance['feature'].tolist()}")
+        # Plot feature importance
+        plt.figure(figsize=(10, 8))
+        ax = feat_importance.plot.barh(x="feature", y="importance", color='skyblue', legend=False)
+        ax.set_xlabel('Absolute Coefficient')
+        ax.set_title('Feature Importance')
+        plt.gca().invert_yaxis()  # Invert y-axis to show most important features at the top
+        plt.grid(True)
+        st.pyplot(plt)
         
        # st.write("Filtered Features based on p-value:")
        # st.dataframe(X_filtered_with_const[importantv.index])
