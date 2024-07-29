@@ -651,7 +651,7 @@ else:
 
 # Merge normalized continuous features with dummy variables
 X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1, join='inner')
-st.write(X_transformed.values.shape,Xc_normalized.values.shape, Xn_dummies.values.shape)
+st.write(X_transformed.values.shape,Xc_normalized.values.shape, Xn_dummies.values.shape,y.shape)
 # Ensure that y has the same index as X_transformed
 y = y.loc[X_transformed.index]
 
