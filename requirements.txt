@@ -10,3 +10,4 @@ seaborn==0.13.2
 st_gsheets_connection==0.0.4
 streamlit==1.30.0
 scikit-learn
+statsmodels
