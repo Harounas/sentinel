@@ -50,7 +50,7 @@ replacements = {
     'syphilis_rdt': {1: 'Positive', 2: 'Negative'},
     'siteregion_crf': {1: 'IKORODU', 4: 'ABAKALIKI', 2: 'OWO', 3: 'IRRUA'},
     'sex_crf': {1: 'Male', 2: 'Female'},
-    'sex_rdt': {1: 'Male', 2: 'Female'}
+    'sex_rdt': {1: 'Male', 2: 'Female'},
     'clinic_crf': {1: 'ISTH', 2: 'General Hospital Ikorodu', 3: 'AEFUTHA, Abakaliki', 4: 'FMC - Owo', 5: 'Other government hospital', 6: 'Other clinic', 7: 'Other hospital'},
     'unit_crf': {1: 'GOPD', 2: 'Pediatrics', 3: 'A&E', 4: 'Annex', 5: 'Other'},
     'sex_sample': {1: 'Male', 2: 'Female'},
