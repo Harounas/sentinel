@@ -720,7 +720,7 @@ elif method == "RFE":
     st.pyplot(plt)
 
 # Display transformed features
-st.write("Transformed Features")
+#st.write("Transformed Features")
 st.dataframe(pd.DataFrame(X_selected, columns=selected_features))
 
 def calc_vif(X_train):
