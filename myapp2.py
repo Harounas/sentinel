@@ -607,7 +607,7 @@ df = df.dropna(axis=1, how='all')
 #independent_variables = st.multiselect("Choose independent variables", options=[col for col in df.columns if col != target_variable],default=default_independent)
 # Default selection
 default_target = df.columns[5]  # First column as default target variable
-default_independent = [col for col in df.columns if col != default_target][:10]  # All other columns as default independent variables
+default_independent = [col for col in df.columns if col != default_target][6:16]  # All other columns as default independent variables
 
 # Choose dependent variable
 target_variable = st.selectbox("Choose the dependent variable", options=df.columns, index=df.columns.get_loc(default_target))
@@ -618,6 +618,16 @@ default_independent = [var for var in default_independent if var in available_in
 
 # Choose independent variables
 independent_variables = st.multiselect("Choose independent variables", options=available_independent_vars, default=default_independent)
+print(df[target_variable],'printed')
+df.dropna(subset=[target_variable],axis=0,inplace=True)
+if pd.api.types.is_object_dtype(df[target_variable]):
+   cat=st.multiselect("Choose two categories",options=df[target_variable].unique(), 
+    default=df[target_variable].unique())
+   df=df[df[target_variable].isin(cat)]
+   if not cat:
+       df=df.copy()
+else:
+     df=df
 X = df[independent_variables]
 y = df[target_variable]
 st.write(X.values.shape,y.values.shape)
@@ -655,11 +665,12 @@ else:
 X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1, join='inner')
 st.write(X_transformed.values.shape,Xc_normalized.values.shape, Xn_dummies.values.shape,y.shape)
 # Ensure that y has the same index as X_transformed
-y = y.loc[X_transformed.index]
+#y = y.loc[X_transformed.index]
 
 # Drop-down menu for feature selection method
 method = st.selectbox("Choose feature selection method", ["SelectKBest", "RFE"])
 
+# Default number of features to keep
 # Default number of features to keep
 default_k = X_transformed.shape[1] if X_transformed.shape[1] > 0 else 1
 
@@ -674,19 +685,131 @@ if method == "SelectKBest":
     selector = SelectKBest(score_func, k=k)
     X_selected = selector.fit_transform(X_transformed, y)
     selected_features = X_transformed.columns[selector.get_support()]
+    
+    # Plot feature importances for SelectKBest
+    scores = selector.scores_
+    feature_scores = pd.DataFrame({'Feature': X_transformed.columns, 'Score': scores})
+    feature_scores = feature_scores.sort_values(by='Score', ascending=False)
+    
     st.write(f"Selected features: {', '.join(selected_features)}")
     
+    # Plotting
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='Score', y='Feature', data=feature_scores)
+    plt.title('Feature Scores from SelectKBest')
+    st.pyplot(plt)
+    
 elif method == "RFE":
-    estimator = LogisticRegression(max_iter=1000) if is_classification else None
+    if is_classification:
+        estimator = LogisticRegression(max_iter=1000)
+    else:
+        estimator = LinearRegression()
+
     n_features = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
-    selector = RFE(estimator, n_features_to_select=n_features) if is_classification else RFE(estimator=None, n_features_to_select=n_features)
+    if n_features > X_transformed.shape[1]:
+        n_features = X_transformed.shape[1]  # Ensure n_features is not larger than the number of features
+    selector = RFE(estimator, n_features_to_select=n_features)
     X_selected = selector.fit_transform(X_transformed, y)
     selected_features = X_transformed.columns[selector.support_]
+    
+    # Plot feature importances for RFE
+    ranking = selector.ranking_
+    feature_ranking = pd.DataFrame({'Feature': X_transformed.columns, 'Ranking': ranking})
+    feature_ranking = feature_ranking.sort_values(by='Ranking')
+    
     st.write(f"Selected features: {', '.join(selected_features)}")
+    
+    # Plotting
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='Ranking', y='Feature', data=feature_ranking)
+    plt.title('Feature Rankings from RFE')
+    st.pyplot(plt)
 
 # Display transformed features
 st.write("Transformed Features")
 st.dataframe(pd.DataFrame(X_selected, columns=selected_features))
+
+def calc_vif(X_train):
+    """Calculate Variance Inflation Factor (VIF) for each feature in X_train."""
+    vif = pd.DataFrame()
+    vif["variables"] = X_train.columns
+    vif["VIF"] = [variance_inflation_factor(X_train.values, i) for i in range(X_train.shape[1])]
+    return vif
+    
+
+
+
+# Calculate and display VIF
+vif_df = calc_vif(X_transformed)
+
+
+# Add drop-down for VIF threshold
+vif_threshold = st.slider("Select VIF Threshold", min_value=1, max_value=10, value=2)
+features_to_keep = vif_df[vif_df['VIF'] < vif_threshold]['variables'].tolist()
+st.write(f"Features with VIF < {vif_threshold}: {features_to_keep}")
+
+X_filtered = X_transformed[features_to_keep]
+
+# Add dropdown for p-value threshold
+p_value_threshold = st.slider("Select p-value Threshold", min_value=0.01, max_value=0.1, value=0.05)
+
+
+        
+        
+# Fit OLS or logistic regression model
+if st.button("Fit Model (with VIF filter)", key="fit_model_vif"):
+    X_filtered_with_const = sm.add_constant(X_filtered)
+
+    if is_classification:
+        # Fit logistic regression model
+        logit_model = sm.Logit(y, X_filtered_with_const)
+        logit_result = logit_model.fit()
+        st.write(logit_result.summary())
+        
+        # Filter features based on p-value
+        importantv = pd.DataFrame(logit_result.summary2().tables[1])
+        importantv = importantv.loc[(importantv['P>|z|'] < p_value_threshold)]
+       
+        # Create DataFrame for feature importance
+        feat_importance = pd.DataFrame(importantv.index.tolist(), columns=["feature"])
+        feat_importance["importance"] = abs(importantv['Coef.'].values)
+        feat_importance = feat_importance.sort_values(by="importance", ascending=True)
+        st.write(f"Features with p-value < {p_value_threshold}: {feat_importance['feature'].tolist()}")
+        # Plot feature importance
+        plt.figure(figsize=(10, 8))
+        ax = feat_importance.plot.barh(x="feature", y="importance", color='skyblue', legend=False)
+        ax.set_xlabel('Absolute Coefficient')
+        ax.set_title('Feature Importance')
+        plt.gca().invert_yaxis()  # Invert y-axis to show most important features at the top
+        plt.grid(True)
+        st.pyplot(plt)
+        
+   
+    
+    else:
+        # Fit OLS model
+        ols_model = sm.OLS(y, X_filtered_with_const)
+        ols_result = ols_model.fit()
+        st.write(ols_result.summary())
+        
+        # Filter features based on p-value
+        importantv = pd.DataFrame(ols_result.summary2().tables[1])
+        importantv = importantv.loc[(importantv['P>|t|'] < p_value_threshold)]
+        
+        # Create DataFrame for feature importance
+        feat_importance = pd.DataFrame(importantv.index.tolist(), columns=["feature"])
+        feat_importance["importance"] = abs(importantv['Coef.'].values)
+        feat_importance = feat_importance.sort_values(by="importance", ascending=True)
+        st.write(f"Features with p-value < {p_value_threshold}: {feat_importance['feature'].tolist()}")
+        # Plot feature importance
+        plt.figure(figsize=(10, 8))
+        ax = feat_importance.plot.barh(x="feature", y="importance", color='skyblue', legend=False)
+        ax.set_xlabel('Absolute Coefficient')
+        ax.set_title('Feature Importance')
+        plt.gca().invert_yaxis()  # Invert y-axis to show most important features at the top
+        plt.grid(True)
+        st.pyplot(plt)
+        
 """
 # Merge normalized continuous features with dummy variables
 X_transformed = pd.concat([Xc_normalized, Xn_dummies], axis=1)
