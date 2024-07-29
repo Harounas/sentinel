@@ -19,7 +19,7 @@ import io
 #from st_vizzu import *
 from scipy.stats import chi2_contingency, fisher_exact
 from scipy.stats import zscore
-from sentinel.column_names import replacements
+from column_names import replacements
 import matplotlib.dates as mdates
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.feature_selection import SelectKBest, f_classif, chi2, f_regression, RFE
