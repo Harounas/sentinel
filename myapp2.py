@@ -54,7 +54,7 @@ def load_data(datapath):
 
 
 
-
+"""
 
 df['sex_crf']=df['sex_crf'].replace({1:'Male',2:'Female'})
 df['clinic_crf']=df['clinic_crf'].replace({1:'ISTH',2:'General Hospital Ikorodu',3:'AEFUTHA, Abakaliki',4:'FMC - Owo',5:'Other government hospital',6:'Other clinic',7:'Other hospital'})
