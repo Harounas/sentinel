@@ -28,6 +28,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.utils import check_array
 import statsmodels.api as sm
 from statsmodels.stats.outliers_influence import variance_inflation_factor
+from statsmodels.sandbox.stats.multicomp import multipletests
 
 #url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
 url="https://docs.google.com/spreadsheets/d/1mMqW_iRtzPG26nl10dGxLwZXry8I49u0NBrMOekiULY/edit?usp=sharing"
@@ -762,6 +763,7 @@ if st.button("Fit Model (with VIF filter)", key="fit_model_vif"):
         
         # Filter features based on p-value
         importantv = pd.DataFrame(logit_result.summary2().tables[1])
+        importantv['P>|z|']= sm.stats.multipletests(importantv['P>|z|'], method='fdr_by')[1]
         importantv = importantv.loc[(importantv['P>|z|'] < p_value_threshold)]
        
         # Create DataFrame for feature importance
@@ -788,6 +790,7 @@ if st.button("Fit Model (with VIF filter)", key="fit_model_vif"):
         
         # Filter features based on p-value
         importantv = pd.DataFrame(ols_result.summary2().tables[1])
+        importantv['P>|t|']= sm.stats.multipletests(importantv['P>|t|'], method='fdr_by')[1]
         importantv = importantv.loc[(importantv['P>|t|'] < p_value_threshold)]
         
         # Create DataFrame for feature importance
