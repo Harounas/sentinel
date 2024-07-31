@@ -307,16 +307,22 @@ dff= df.groupby(['date_crf', 'siteregion_crf']).size().reset_index(name='Count')
 
 #dff= dff[(dff['LGA']=="IKORODU") | (dff['LGA'] == 'OWO') |(dff['LGA'] == 'Abakaliki')|(dff['LGA'] == 'Ebonyi')]
 #dff= dff[(dff['Region of site']=='IKORODU') | (dff['Region of site'] == 'Abakaliki')]
-dff['date_crf'] =pd.to_datetime(dff['date_crf'] ).dt.strftime('%Y-%m-%d')
+dff['date_crf'] =pd.to_datetime(dff['date_crf'] ).dt.strftime('%Y-%m-%d').astype("datetime64")
+for val1 in dff['date_crf'].unique():
+    for val2 in dff['siteregion_crf'].unique():
+     new_row = {'date_crf': val1, 'siteregion_crf': val2,'Count':0}
+     dff = dff.append(new_row, ignore_index=True)
+    #dff['date_crf'] = pd.to_datetime(dff['date_crf'])#now
+dff=dff.groupby(['date_crf','siteregion_crf']).sum().reset_index()[['Count','date_crf','siteregion_crf']]
 dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
+
+   # dfff['date_crf'] = pd.to_datetime(dfff['date_crf'])#now
 dfff['Total']='Total'
 fig,ax = plt.subplots(figsize=(15, 12))
-sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Date', ylabel='siteregion_crf')
-# Determine the timeframe of the data
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-ax.xaxis.set_major_locator(mdates.MonthLocator())  #
-#sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel='siteregion_crf')
-#sns.set_theme(style='white', font_scale=3)
+sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue=select_catcol0[0],palette='Set1').set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
+    
+    #sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
+sns.set_theme(style='white', font_scale=3)
 ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
           fancybox=True, shadow=True, ncol=5)
 # Remove the frame (border) around the plot
@@ -324,15 +330,13 @@ ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
 #sns.gca().spines['right'].set_visible(False)
 #plt.gca().spines['bottom'].set_visible(False)
 #plt.gca().spines['left'].set_visible(False)
-# Calculate time range in days
-
-#monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq='d')  # Monthly intervals
-#plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=90)
+monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq='d')  # Monthly intervals
+plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
 
 ax.tick_params(axis='x', labelsize=15)
 ax.set_xlabel('Date')
 ax.set_ylabel('Value')
-
+#ax.set_title('Plot through Time with Custom X-axis Ticks')
 plt.xticks(rotation=90)
 #ax.tight_layout()
 st.pyplot(fig)
@@ -412,7 +416,7 @@ if select_catcol0:
     fig,ax = plt.subplots(figsize=(15, 12))
     sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue=select_catcol0[0],palette='Set1').set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
     
-    sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
+    #sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
     sns.set_theme(style='white', font_scale=3)
     ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
           fancybox=True, shadow=True, ncol=5)
