@@ -460,30 +460,7 @@ if select_catcol0:
 # Adjust layout and display
     fig.tight_layout()
     st.pyplot(fig)
-"""
-# Adjust x-axis date formatting
-ax.xaxis.set_major_locator(mdates.AutoDateLocator())
-ax.xaxis.set_major_formatter(mdates.AutoDateFormatter(mdates.AutoDateLocator()))
-st.write(dfff.columns)
-st.write(dfff['date_crf'].min(), dfff['date_crf'].max())
-# Get the date range and adjust ticks
-date_range = dfff['date_crf'].max() - dfff['date_crf'].min()
-if date_range < pd.Timedelta('60 days'):
-    ax.xaxis.set_major_locator(mdates.DayLocator())
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
-else:
-    ax.xaxis.set_major_locator(mdates.MonthLocator())
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
 
-ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5)
-
-ax.tick_params(axis='x', labelsize=15)
-ax.set_xlabel('Date')
-ax.set_ylabel('Value')
-plt.xticks(rotation=90)
-#ax.tight_layout()
-st.pyplot(fig)
-"""
 select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
 if select_catcol:
     st.write("Selected categorical column is : ", select_catcol[0])
