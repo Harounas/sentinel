@@ -405,10 +405,10 @@ if select_catcol0:
    # dfff['date_crf'] = pd.to_datetime(dfff['date_crf'])#now
     dfff['Total']='Total'
     fig,ax = plt.subplots(figsize=(15, 12))
-    sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue=select_catcol0[0],palette='Set1').set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
-    """
-    #sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
-#sns.set_theme(style='white', font_scale=3)
+    #sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue=select_catcol0[0],palette='Set1').set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
+    
+    sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
+    sns.set_theme(style='white', font_scale=3)
     ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
           fancybox=True, shadow=True, ncol=5)
 # Remove the frame (border) around the plot
@@ -449,7 +449,7 @@ ax.set_ylabel('Value')
 plt.xticks(rotation=90)
 #ax.tight_layout()
 st.pyplot(fig)
-
+"""
 select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
 if select_catcol:
     st.write("Selected categorical column is : ", select_catcol[0])
