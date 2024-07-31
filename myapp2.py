@@ -320,7 +320,7 @@ dfff['Total']='Total'
 fig,ax = plt.subplots(figsize=(12, 9))
 sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Visit date', ylabel='siteregion_crf')
 sns.set_theme(style='white', font_scale=3)
-ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5)
+#ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5)
 
 # Calculate duration
 start_date = dff['date_crf'].iloc[0]
