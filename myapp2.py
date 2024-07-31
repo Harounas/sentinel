@@ -339,7 +339,7 @@ labels = [date.strftime('%Y-%m-%d') for date in ticks]
 
 # Set ticks and labels
 ax.set_xticks(ticks)
-#ax.set_xticklabels(labels, rotation=45 if tick_freq == 'M' else 90)
+ax.set_xticklabels(labels, rotation=45 if tick_freq == 'M' else 90)
 
 # Customize x-axis and y-axis
 ax.tick_params(axis='x', labelsize=15)
