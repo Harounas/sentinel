@@ -320,7 +320,7 @@ dfff['Total']='Total'
 fig,ax = plt.subplots(figsize=(12, 9))
 sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Visit date', ylabel='siteregion_crf')
 sns.set_theme(style='white', font_scale=3)
-ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5, fontsize=10)
+ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5, fontsize=12)
 
 # Calculate duration
 start_date = dff['date_crf'].iloc[0]
@@ -351,32 +351,6 @@ ax.set_ylabel('Frequency')
 # Adjust layout and display
 fig.tight_layout()
 st.pyplot(fig)
-"""
-   # dfff['date_crf'] = pd.to_datetime(dfff['date_crf'])#now
-dfff['Total']='Total'
-fig,ax = plt.subplots(figsize=(15, 12))
-sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Date', ylabel='siteregion_crf')
-    
-    #sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
-sns.set_theme(style='white', font_scale=3)
-ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
-          fancybox=True, shadow=True, ncol=5)
-# Remove the frame (border) around the plot
-#sns.gca().spines['top'].set_visible(False)
-#sns.gca().spines['right'].set_visible(False)
-#plt.gca().spines['bottom'].set_visible(False)
-#plt.gca().spines['left'].set_visible(False)
-monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq='d')  # Monthly intervals
-plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
-
-ax.tick_params(axis='x', labelsize=15)
-ax.set_xlabel('Date')
-ax.set_ylabel('Value')
-#ax.set_title('Plot through Time with Custom X-axis Ticks')
-plt.xticks(rotation=90)
-#ax.tight_layout()
-st.pyplot(fig)
-"""
 # Save the plot to a file-like object
 buf1 = io.BytesIO()
 fig.savefig(buf1, format='png')
@@ -455,22 +429,36 @@ if select_catcol0:
     
     #sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
     sns.set_theme(style='white', font_scale=3)
-    ax.legend(loc='upper center', #bbox_to_anchor=(0.4,0.0001),
-          fancybox=True, shadow=True, ncol=5)
-# Remove the frame (border) around the plot
-#sns.gca().spines['top'].set_visible(False)
-#sns.gca().spines['right'].set_visible(False)
-#plt.gca().spines['bottom'].set_visible(False)
-#plt.gca().spines['left'].set_visible(False)
-    monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq='d')  # Monthly intervals
-    plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
+    ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5, fontsize=12)
 
-    ax.tick_params(axis='x', labelsize=15)
-    ax.set_xlabel('Date')
-    ax.set_ylabel('Value')
-#ax.set_title('Plot through Time with Custom X-axis Ticks')
-    plt.xticks(rotation=90)
-#ax.tight_layout()
+# Calculate duration
+    start_date = dff['date_crf'].iloc[0]
+    end_date = dff['date_crf'].iloc[-1]
+    duration = end_date - start_date
+
+# Determine tick frequency
+    if duration <= pd.Timedelta(days=90):  # Less than or equal to 2 months
+     tick_freq = '2D'  # Daily
+    else:
+     tick_freq = '15D'  # Monthly
+
+# Generate ticks
+    ticks = pd.date_range(start=start_date, end=end_date, freq=tick_freq)
+    labels = [date.strftime('%Y-%m-%d') for date in ticks]
+
+# Set ticks and labels
+    ax.set_xticks(ticks)
+    ax.set_xticklabels(labels, rotation=45 if tick_freq == 'M' else 90)
+
+# Customize x-axis and y-axis
+    ax.tick_params(axis='x', labelsize=12)
+    ax.set_xlabel('Visit date', fontsize=12)  # Adjust as needed
+    ax.set_ylabel('Frequency', fontsize=12) 
+    ax.set_xlabel('Visit date')
+    ax.set_ylabel('Frequency')
+
+# Adjust layout and display
+    fig.tight_layout()
     st.pyplot(fig)
 """
 # Adjust x-axis date formatting
