@@ -328,7 +328,7 @@ end_date = dff['date_crf'].iloc[-1]
 duration = end_date - start_date
 
 # Determine tick frequency
-if duration <= pd.Timedelta(days=60):  # Less than or equal to 2 months
+if duration <= pd.Timedelta(days=30):  # Less than or equal to 2 months
     tick_freq = 'D'  # Daily
 else:
     tick_freq = 'M'  # Monthly
@@ -339,7 +339,7 @@ labels = [date.strftime('%Y-%m-%d') for date in ticks]
 
 # Set ticks and labels
 ax.set_xticks(ticks)
-ax.set_xticklabels(labels, rotation=45 if tick_freq == 'M' else 90)
+#ax.set_xticklabels(labels, rotation=45 if tick_freq == 'M' else 90)
 
 # Customize x-axis and y-axis
 ax.tick_params(axis='x', labelsize=15)
