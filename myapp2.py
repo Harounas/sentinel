@@ -406,7 +406,7 @@ if select_catcol0:
     #dff['date_crf'] = pd.to_datetime(dff['date_crf'])#now
     dff=dff.groupby(['date_crf',select_catcol0[0]]).sum().reset_index()[['Count','date_crf',select_catcol0[0]]]
     dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
-    dfff['date_crf'] = dfff.index()
+
    # dfff['date_crf'] = pd.to_datetime(dfff['date_crf'])#now
     dfff['Total']='Total'
     fig,ax = plt.subplots(figsize=(15, 12))
@@ -421,8 +421,8 @@ if select_catcol0:
 #sns.gca().spines['right'].set_visible(False)
 #plt.gca().spines['bottom'].set_visible(False)
 #plt.gca().spines['left'].set_visible(False)
-#monthly_ticks = pd.date_range(start=dff['Date of visit (dd/mm/yyyy)'].iloc[0], end=dff['Date of visit (dd/mm/yyyy)'].iloc[-1],freq='d')  # Monthly intervals
-#plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
+    monthly_ticks = pd.date_range(start=dff['Date of visit (dd/mm/yyyy)'].iloc[0], end=dff['Date of visit (dd/mm/yyyy)'].iloc[-1],freq='d')  # Monthly intervals
+    plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
 
     ax.tick_params(axis='x', labelsize=15)
     ax.set_xlabel('Date')
