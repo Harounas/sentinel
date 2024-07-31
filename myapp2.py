@@ -315,7 +315,41 @@ for val1 in dff['date_crf'].unique():
     #dff['date_crf'] = pd.to_datetime(dff['date_crf'])#now
 dff=dff.groupby(['date_crf','siteregion_crf']).sum().reset_index()[['Count','date_crf','siteregion_crf']]
 dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
+# Additional plot settings
+dfff['Total']='Total'
+fig,ax = plt.subplots(figsize=(15, 12))
+sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Date', ylabel='siteregion_crf')
+sns.set_theme(style='white', font_scale=3)
+ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5)
 
+# Calculate duration
+start_date = dff['date_crf'].iloc[0]
+end_date = dff['date_crf'].iloc[-1]
+duration = end_date - start_date
+
+# Determine tick frequency
+if duration <= pd.Timedelta(days=60):  # Less than or equal to 2 months
+    tick_freq = 'D'  # Daily
+else:
+    tick_freq = 'M'  # Monthly
+
+# Generate ticks
+ticks = pd.date_range(start=start_date, end=end_date, freq=tick_freq)
+labels = [date.strftime('%Y-%m-%d') for date in ticks]
+
+# Set ticks and labels
+ax.set_xticks(ticks)
+ax.set_xticklabels(labels, rotation=45 if tick_freq == 'M' else 90)
+
+# Customize x-axis and y-axis
+ax.tick_params(axis='x', labelsize=15)
+ax.set_xlabel('Date')
+ax.set_ylabel('Value')
+
+# Adjust layout and display
+fig.tight_layout()
+st.pyplot(fig)
+"""
    # dfff['date_crf'] = pd.to_datetime(dfff['date_crf'])#now
 dfff['Total']='Total'
 fig,ax = plt.subplots(figsize=(15, 12))
@@ -340,6 +374,7 @@ ax.set_ylabel('Value')
 plt.xticks(rotation=90)
 #ax.tight_layout()
 st.pyplot(fig)
+"""
 # Save the plot to a file-like object
 buf1 = io.BytesIO()
 fig.savefig(buf1, format='png')
