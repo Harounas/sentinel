@@ -429,7 +429,8 @@ if select_catcol0:
 # Adjust x-axis date formatting
 ax.xaxis.set_major_locator(mdates.AutoDateLocator())
 ax.xaxis.set_major_formatter(mdates.AutoDateFormatter(mdates.AutoDateLocator()))
-
+st.write(dfff['date_crf'].head())
+st.write(dfff['date_crf'].min(), dfff['date_crf'].max())
 # Get the date range and adjust ticks
 date_range = dfff['date_crf'].max() - dfff['date_crf'].min()
 if date_range < pd.Timedelta('60 days'):
