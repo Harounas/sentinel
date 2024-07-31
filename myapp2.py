@@ -318,7 +318,7 @@ dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
 # Additional plot settings
 dfff['Total']='Total'
 fig,ax = plt.subplots(figsize=(15, 12))
-sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Date', ylabel='siteregion_crf')
+sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Visit date', ylabel='siteregion_crf')
 sns.set_theme(style='white', font_scale=3)
 ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5)
 
@@ -331,7 +331,7 @@ duration = end_date - start_date
 if duration <= pd.Timedelta(days=90):  # Less than or equal to 2 months
     tick_freq = '2D'  # Daily
 else:
-    tick_freq = 'M'  # Monthly
+    tick_freq = '15D'  # Monthly
 
 # Generate ticks
 ticks = pd.date_range(start=start_date, end=end_date, freq=tick_freq)
@@ -342,9 +342,9 @@ ax.set_xticks(ticks)
 ax.set_xticklabels(labels, rotation=45 if tick_freq == 'M' else 90)
 
 # Customize x-axis and y-axis
-ax.tick_params(axis='x', labelsize=15)
-ax.set_xlabel('Date')
-ax.set_ylabel('Value')
+ax.tick_params(axis='x', labelsize=10)
+ax.set_xlabel('Visit date')
+ax.set_ylabel('Frequency')
 
 # Adjust layout and display
 fig.tight_layout()
