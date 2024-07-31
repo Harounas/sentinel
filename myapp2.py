@@ -401,6 +401,7 @@ if select_catcol0:
     #dff['date_crf'] =pd.to_datetime(dff['date_crf'] ).dt.strftime('%Y-%m-%d')
     dff['date_crf'] = pd.to_datetime(dff['date_crf'])#now
     dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
+    dfff['date_crf'] = dfff.index
    # dfff['date_crf'] = pd.to_datetime(dfff['date_crf'])#now
     dfff['Total']='Total'
     fig,ax = plt.subplots(figsize=(15, 12))
