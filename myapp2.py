@@ -430,7 +430,7 @@ ax.xaxis.set_major_locator(mdates.AutoDateLocator())
 ax.xaxis.set_major_formatter(mdates.AutoDateFormatter(mdates.AutoDateLocator()))
 
 # Get the date range and adjust ticks
-date_range = pd.to_datetime(dfff['date_crf']).max() - pd.to_datetime(dfff['date_crf']).min()
+date_range = dfff['date_crf'].max() - dfff['date_crf'].min()
 if date_range < pd.Timedelta('60 days'):
     ax.xaxis.set_major_locator(mdates.DayLocator())
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
