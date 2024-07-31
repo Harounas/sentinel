@@ -399,7 +399,7 @@ if select_catcol0:
 #dff= dff[(dff['LGA']=="IKORODU") | (dff['LGA'] == 'OWO') |(dff['LGA'] == 'Abakaliki')|(dff['LGA'] == 'Ebonyi')]
 #dff= dff[(dff['Region of site']=='IKORODU') | (dff['Region of site'] == 'Abakaliki')]
     dff['date_crf'] =pd.to_datetime(dff['date_crf'] ).dt.strftime('%Y-%m-%d').astype("datetime64")
-    for val1 in dff['Date of visit (dd/mm/yyyy)'].unique():
+    for val1 in dff['date_crf'].unique():
       for val2 in dff[select_catcol0[0]].unique():
         new_row = {'date_crf': val1, select_catcol0[0]: val2,'Count':0}
         dff = dff.append(new_row, ignore_index=True)
