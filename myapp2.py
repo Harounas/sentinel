@@ -432,10 +432,10 @@ ax.xaxis.set_major_formatter(mdates.AutoDateFormatter(mdates.AutoDateLocator()))
 date_range = pd.to_datetime(dfff['date_crf']).max() - pd.to_datetime(dfff['date_crf']).min()
 if date_range < pd.Timedelta('60 days'):
     ax.xaxis.set_major_locator(mdates.DayLocator())
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
 else:
     ax.xaxis.set_major_locator(mdates.MonthLocator())
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
 
 ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5)
 
