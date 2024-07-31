@@ -399,9 +399,9 @@ if select_catcol0:
 #dff= dff[(dff['LGA']=="IKORODU") | (dff['LGA'] == 'OWO') |(dff['LGA'] == 'Abakaliki')|(dff['LGA'] == 'Ebonyi')]
 #dff= dff[(dff['Region of site']=='IKORODU') | (dff['Region of site'] == 'Abakaliki')]
     #dff['date_crf'] =pd.to_datetime(dff['date_crf'] ).dt.strftime('%Y-%m-%d')
-    dff['date_crf'] = pd.to_datetime(dff['date_crf'])
+    dff['date_crf'] = pd.to_datetime(dff['date_crf'])#now
     dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
-    dfff['date_crf'] = pd.to_datetime(dfff['date_crf'])
+   # dfff['date_crf'] = pd.to_datetime(dfff['date_crf'])#now
     dfff['Total']='Total'
     fig,ax = plt.subplots(figsize=(15, 12))
     sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue=select_catcol0[0],palette='Set1').set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
