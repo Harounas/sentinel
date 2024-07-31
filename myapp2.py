@@ -317,7 +317,7 @@ dff=dff.groupby(['date_crf','siteregion_crf']).sum().reset_index()[['Count','dat
 dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
 # Additional plot settings
 dfff['Total']='Total'
-fig,ax = plt.subplots(figsize=(15, 12))
+fig,ax = plt.subplots(figsize=(12, 9))
 sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='siteregion_crf',palette='Set1').set(title=' ', xlabel='Visit date', ylabel='siteregion_crf')
 sns.set_theme(style='white', font_scale=3)
 ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5)
@@ -342,7 +342,7 @@ ax.set_xticks(ticks)
 ax.set_xticklabels(labels, rotation=45 if tick_freq == 'M' else 90)
 
 # Customize x-axis and y-axis
-ax.tick_params(axis='x', labelsize=10)
+ax.tick_params(axis='x', labelsize=12)
 ax.set_xlabel('Visit date')
 ax.set_ylabel('Frequency')
 
