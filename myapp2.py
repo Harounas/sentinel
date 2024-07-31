@@ -435,7 +435,7 @@ if date_range < pd.Timedelta('60 days'):
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
 else:
     ax.xaxis.set_major_locator(mdates.MonthLocator())
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
 
 ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5)
 
