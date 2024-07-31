@@ -421,7 +421,7 @@ if select_catcol0:
 #sns.gca().spines['right'].set_visible(False)
 #plt.gca().spines['bottom'].set_visible(False)
 #plt.gca().spines['left'].set_visible(False)
-    monthly_ticks = pd.date_range(start=dff['Date of visit (dd/mm/yyyy)'].iloc[0], end=dff['Date of visit (dd/mm/yyyy)'].iloc[-1],freq='d')  # Monthly intervals
+    monthly_ticks = pd.date_range(start=dff['date_crf'].iloc[0], end=dff['date_crf'].iloc[-1],freq='d')  # Monthly intervals
     plt.xticks(ticks=monthly_ticks, labels=[date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
 
     ax.tick_params(axis='x', labelsize=15)
