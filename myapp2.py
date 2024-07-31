@@ -328,8 +328,8 @@ end_date = dff['date_crf'].iloc[-1]
 duration = end_date - start_date
 
 # Determine tick frequency
-if duration <= pd.Timedelta(days=30):  # Less than or equal to 2 months
-    tick_freq = 'D'  # Daily
+if duration <= pd.Timedelta(days=90):  # Less than or equal to 2 months
+    tick_freq = '2D'  # Daily
 else:
     tick_freq = 'M'  # Monthly
 
