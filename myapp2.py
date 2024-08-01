@@ -547,6 +547,8 @@ if select_catcol and select_numcol:
    ax.set_title(' ', fontsize=12) 
    ax.set_xlabel(f'{select_catcol[0]}', fontsize=12)  # Adjust fontsize as needed
    ax.set_ylabel(f'{select_numcol[0]}', fontsize=12) 
+   ax.tick_params(axis='x', labelsize=8)  # Reduce x-axis tick label size
+   ax.tick_params(axis='y', labelsize=8)  # Reduce y-axis tick label size
 # Display the plot in Streamlit app
    st.pyplot(fig)
    #st.write(dfs.loc[dfs[select_catcol[0]]==dfs[select_catcol[0]].value_counts().index.tolist()[0]]['Sex'])
