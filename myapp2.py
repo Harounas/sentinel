@@ -741,7 +741,7 @@ if method == "SelectKBest":
     st.write(f"Selected features: {', '.join(selected_features)}")
     
     # Plotting
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(12, 15))
     sns.barplot(x='Score', y='Feature', data=top_k_scores)
     ax.tick_params(axis='x', labelsize=8)  # Reduce x-axis tick label size
     ax.tick_params(axis='y', labelsize=8)  # Reduce y-axis tick label size
