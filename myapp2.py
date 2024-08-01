@@ -703,6 +703,8 @@ method = st.selectbox("Choose feature selection method", ["SelectKBest", "RFE"])
 
 # Default number of features to keep
 # Default number of features to keep
+k = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
+#n_features = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
 default_k = X_transformed.shape[1] if X_transformed.shape[1] > 0 else 1
 
 # Apply feature selection based on user choice
@@ -712,7 +714,7 @@ if method == "SelectKBest":
     else:
         score_func = f_regression
     
-    k = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
+    #k = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
     selector = SelectKBest(score_func, k=k)
     X_selected = selector.fit_transform(X_transformed, y)
     selected_features = X_transformed.columns[selector.get_support()]
@@ -736,10 +738,10 @@ elif method == "RFE":
     else:
         estimator = LinearRegression()
 
-    n_features = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
+    #n_features = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
     if n_features > X_transformed.shape[1]:
         n_features = X_transformed.shape[1]  # Ensure n_features is not larger than the number of features
-    selector = RFE(estimator, n_features_to_select=n_features)
+    selector = RFE(estimator, n_features_to_select=k)
     X_selected = selector.fit_transform(X_transformed, y)
     selected_features = X_transformed.columns[selector.support_]
     
