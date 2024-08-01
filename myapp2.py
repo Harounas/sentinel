@@ -742,7 +742,8 @@ if method == "SelectKBest":
     
     # Plotting
     plt.figure(figsize=(15, 15))
-    sns.barplot(x='Score', y='Feature', data=top_k_scores)
+    palette = sns.color_palette("viridis", len(top_k_scores)) 
+    sns.barplot(x='Score', y='Feature', data=top_k_scores,palette=palette)
     ax.tick_params(axis='x', labelsize=8)  # Reduce x-axis tick label size
     ax.tick_params(axis='y', labelsize=8)  # Reduce y-axis tick label size
     plt.title('Feature Scores from SelectKBest')
