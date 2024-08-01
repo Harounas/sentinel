@@ -739,8 +739,8 @@ elif method == "RFE":
         estimator = LinearRegression()
 
     #n_features = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
-    if n_features > X_transformed.shape[1]:
-        n_features = X_transformed.shape[1]  # Ensure n_features is not larger than the number of features
+    if k > X_transformed.shape[1]:
+        k= X_transformed.shape[1]  # Ensure n_features is not larger than the number of features
     selector = RFE(estimator, n_features_to_select=k)
     X_selected = selector.fit_transform(X_transformed, y)
     selected_features = X_transformed.columns[selector.support_]
