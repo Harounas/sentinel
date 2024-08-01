@@ -595,7 +595,7 @@ def chi_square_test(data1,data2):
 def fishers_exact_test(data):
     oddsratio, p = fisher_exact(data)
     return oddsratio, p
-select_col11=st.multiselect('Please select a first categorical column for statisticala analysis',df.select_dtypes(include='object').columns)
+select_col11=st.multiselect('Please select a first categorical column for statistical analysis',df.select_dtypes(include='object').columns)
 select_col22=st.multiselect('Please select a second categorical column for statisticala analysis',df.select_dtypes(include='object').columns)
 # Main app
 if select_col11 and select_col22:
