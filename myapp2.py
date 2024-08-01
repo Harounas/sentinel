@@ -723,12 +723,12 @@ if method == "SelectKBest":
     scores = selector.scores_
     feature_scores = pd.DataFrame({'Feature': X_transformed.columns, 'Score': scores})
     feature_scores = feature_scores.sort_values(by='Score', ascending=False)
-    
+    top_k_scores =  feature_scores.head(k)
     st.write(f"Selected features: {', '.join(selected_features)}")
     
     # Plotting
     plt.figure(figsize=(10, 6))
-    sns.barplot(x='Score', y='Feature', data=feature_scores)
+    sns.barplot(x='Score', y='Feature', data=top_k_scores)
     plt.title('Feature Scores from SelectKBest')
     st.pyplot(plt)
     
