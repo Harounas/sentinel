@@ -780,16 +780,36 @@ elif method == "RFE":
     
     # Plot feature importances for RFE
     ranking = selector.ranking_
+    
     feature_ranking = pd.DataFrame({'Feature': X_transformed.columns, 'Ranking': ranking})
     feature_ranking = feature_ranking.sort_values(by='Ranking')
     top_k_features = feature_ranking.head(k)
     st.write(f"Selected features: {', '.join(selected_features)}")
     
     # Plotting
-    plt.figure(figsize=(10, 6))
-    sns.barplot(x='Ranking', y='Feature', data=top_k_features)
+    plt.figure(figsize=(15, 15))
+    palette = sns.color_palette("viridis", len(top_k_scores)) 
+    sns.barplot(x='Ranking', y='Feature', data=top_k_features,palette=palette)
+    ax.tick_params(axis='x', labelsize=8)  # Reduce x-axis tick label size
+    ax.tick_params(axis='y', labelsize=8)  # Reduce y-axis tick label size
     plt.title('Feature Rankings from RFE')
     st.pyplot(plt)
+    
+    fig.tight_layout()
+# Display the plot in Streamlit app
+    #st.pyplot(fig)
+   #st.write(dfs.loc[dfs[select_catcol[0]]==dfs[select_catcol[0]].value_counts().index.tolist()[0]]['Sex'])
+    buf7 = io.BytesIO()
+    fig.savefig(buf7, format='png')
+    buf7.seek(0)
+
+# Create a download button for the plot
+    st.download_button(
+    label="Download Plot",
+    data=buf7,
+    file_name="plot_RFEfeats.png",
+    mime="image/png"
+)
 
 # Display transformed features
 #st.write("Transformed Features")
