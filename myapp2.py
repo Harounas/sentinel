@@ -357,8 +357,7 @@ fig.savefig(buf1, format='png')
 buf1.seek(0)
 
 # Create a download button for the plot
-st.download_button
-    label="Download Plot",
+st.download_button(label="Download Plot",
     data=buf1,
     file_name="plot_date.png",
     #mime="image/png"
