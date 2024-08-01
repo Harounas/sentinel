@@ -703,10 +703,10 @@ method = st.selectbox("Choose feature selection method", ["SelectKBest", "RFE"])
 
 # Default number of features to keep
 # Default number of features to keep
-k = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
+
 #n_features = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
 default_k = X_transformed.shape[1] if X_transformed.shape[1] > 0 else 1
-
+k = st.slider("Select number of features to keep", min_value=1, max_value=X_transformed.shape[1], value=default_k)
 # Apply feature selection based on user choice
 if method == "SelectKBest":
     if is_classification:
