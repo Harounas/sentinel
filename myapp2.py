@@ -543,7 +543,7 @@ if select_catcol and select_numcol:
    
    st.write("Selected categorical column is : ", select_catcol[0], "" " and Selected numerical column is : ",select_numcol[0] )
    fig, ax = plt.subplots(figsize=(8, 6))
-   ax.boxplot(x=select_catcol[0], y=select_numcol[0],data=df1,widths=0.5)
+   sns.boxplot(x=select_catcol[0], y=select_numcol[0],data=df1)
    ax.set_title(' ') 
    ax.set_xlabel(f'{select_catcol[0]}', fontsize=12)  # Adjust fontsize as needed
    ax.set_ylabel(f'{select_numcol[0]}', fontsize=12) 
