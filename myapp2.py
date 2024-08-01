@@ -749,12 +749,12 @@ elif method == "RFE":
     ranking = selector.ranking_
     feature_ranking = pd.DataFrame({'Feature': X_transformed.columns, 'Ranking': ranking})
     feature_ranking = feature_ranking.sort_values(by='Ranking')
-    
+    top_k_features = feature_ranking.head(k)
     st.write(f"Selected features: {', '.join(selected_features)}")
     
     # Plotting
     plt.figure(figsize=(10, 6))
-    sns.barplot(x='Ranking', y='Feature', data=feature_ranking)
+    sns.barplot(x='Ranking', y='Feature', data=top_k_features)
     plt.title('Feature Rankings from RFE')
     st.pyplot(plt)
 
