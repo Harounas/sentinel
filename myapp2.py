@@ -743,10 +743,11 @@ if method == "SelectKBest":
     # Plotting
     plt.figure(figsize=(10, 6))
     sns.barplot(x='Score', y='Feature', data=top_k_scores)
+    ax.tick_params(axis='x', labelsize=8)  # Reduce x-axis tick label size
+    ax.tick_params(axis='y', labelsize=8)  # Reduce y-axis tick label size
     plt.title('Feature Scores from SelectKBest')
     st.pyplot(plt)
-    #ax.tick_params(axis='x', labelsize=12)  # Reduce x-axis tick label size
-    #ax.tick_params(axis='y', labelsize=12)  # Reduce y-axis tick label size
+    
     fig.tight_layout()
 # Display the plot in Streamlit app
     #st.pyplot(fig)
