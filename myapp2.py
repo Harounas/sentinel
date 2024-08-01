@@ -425,7 +425,7 @@ if select_catcol0:
    # dfff['date_crf'] = pd.to_datetime(dfff['date_crf'])#now
     dfff['Total']='Total'
     fig,ax = plt.subplots(figsize=(15, 12))
-    sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue='select_catcol0[0]',palette='Set1').set(title=' ', xlabel='Date', ylabel='select_catcol0[0]')
+    sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue=select_catcol0[0],palette='Set1').set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
     
     #sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
     sns.set_theme(style='white', font_scale=3)
