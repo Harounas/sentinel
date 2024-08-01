@@ -386,7 +386,7 @@ def detect_outliers_zscore(data):
 
 # Main app
 if select_out:
-    data =df[select_out]
+    data =df[select_out].dropna()
 
 
 
