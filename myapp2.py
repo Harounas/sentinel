@@ -357,12 +357,12 @@ fig.savefig(buf1, format='png')
 buf1.seek(0)
 
 # Create a download button for the plot
-#st.download_button
- #   label="Download Plot",
-  #  data=buf1,
-   # file_name="plot_date.png",
+st.download_button
+    label="Download Plot",
+    data=buf1,
+    file_name="plot_date.png",
     #mime="image/png"
-#)
+)
 
 dff= df.groupby(['hiv_rdt', 'siteregion_crf']).size().reset_index(name='Count')
 
