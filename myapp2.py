@@ -459,6 +459,19 @@ if select_catcol0:
 # Adjust layout and display
     fig.tight_layout()
     st.pyplot(fig)
+    fig.tight_layout()
+
+# Save the plot to a file-like object
+    buf4 = io.BytesIO()
+    fig.savefig(buf4, format='png')
+    buf4.seek(0)
+
+# Create a download button for the plot
+    st.download_button(label="Download Plot",
+    data=buf1,
+    file_name="plot_date1.png",
+    #mime="image/png"
+)
 
 select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
 if select_catcol:
