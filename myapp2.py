@@ -745,20 +745,20 @@ if method == "SelectKBest":
     sns.barplot(x='Score', y='Feature', data=top_k_scores)
     plt.title('Feature Scores from SelectKBest')
     st.pyplot(plt)
-    ax.tick_params(axis='x', labelsize=12)  # Reduce x-axis tick label size
-    ax.tick_params(axis='y', labelsize=12)  # Reduce y-axis tick label size
+    #ax.tick_params(axis='x', labelsize=12)  # Reduce x-axis tick label size
+    #ax.tick_params(axis='y', labelsize=12)  # Reduce y-axis tick label size
     fig.tight_layout()
 # Display the plot in Streamlit app
-    st.pyplot(fig)
+    #st.pyplot(fig)
    #st.write(dfs.loc[dfs[select_catcol[0]]==dfs[select_catcol[0]].value_counts().index.tolist()[0]]['Sex'])
-    buf5 = io.BytesIO()
-    fig.savefig(buf5, format='png')
-    buf5.seek(0)
+    buf6 = io.BytesIO()
+    fig.savefig(buf6, format='png')
+    buf6.seek(0)
 
 # Create a download button for the plot
     st.download_button(
     label="Download Plot",
-    data=buf5,
+    data=buf6,
     file_name="plot_bestkafeats.png",
     mime="image/png"
 )
