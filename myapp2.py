@@ -544,10 +544,9 @@ if select_catcol and select_numcol:
    st.write("Selected categorical column is : ", select_catcol[0], "" " and Selected numerical column is : ",select_numcol[0] )
    fig, ax = plt.subplots()
    df1.boxplot(by=select_catcol[0], column=select_numcol[0], ax=ax)
-   plt.title(' ')
-   plt.xlabel(f'{select_catcol[0]}')
-   plt.ylabel(f'{select_numcol[0]}')
-
+   ax.set_title(' ', fontsize=12) 
+   ax.set_xlabel(f'{select_catcol[0]}', fontsize=10)  # Adjust fontsize as needed
+   ax.set_ylabel(f'{select_numcol[0]}', fontsize=10) 
 # Display the plot in Streamlit app
    st.pyplot(fig)
    #st.write(dfs.loc[dfs[select_catcol[0]]==dfs[select_catcol[0]].value_counts().index.tolist()[0]]['Sex'])
