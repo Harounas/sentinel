@@ -468,7 +468,7 @@ if select_catcol0:
 
 # Create a download button for the plot
     st.download_button(label="Download Plot",
-    data=buf1,
+    data=buf4,
     file_name="plot_date1.png",
     #mime="image/png"
 )
