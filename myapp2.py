@@ -30,66 +30,65 @@ import statsmodels.api as sm
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.sandbox.stats.multicomp import multipletests
 
-#url="https://docs.google.com/spreadsheets/d/1lyBADWC8fAhUNw4LOcIoOSYBqNeEbVs_KU71O8rKqfs/edit?usp=sharing"
-url="https://docs.google.com/spreadsheets/d/1mMqW_iRtzPG26nl10dGxLwZXry8I49u0NBrMOekiULY/edit?usp=sharing"
-conn = st.connection("gsheets", type=GSheetsConnection)
-st.title("Data summary sentinel project")
-st.markdown("---")
-
+# Define the URL for Google Sheets
+url = "https://docs.google.com/spreadsheets/d/1mMqW_iRtzPG26nl10dGxLwZXry8I49u0NBrMOekiULY/edit?usp=sharing"
 conn = st.connection("gsheets", type=GSheetsConnection)
 
+# Title and markdown for the app
+st.title("Data Summary Sentinel Project")
 st.markdown("---")
+
+# Function to load data from Google Sheets
 @st.cache_data
 def load_data(datapath):
     dataset = conn.read(spreadsheet=datapath)
     return dataset
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Text input widget for token
 token = st.sidebar.text_input("Input a token")
-#token = st.sidebar.text_input("Input a token")
 
-
-#df0 = load_data(url)
+# Function to process uploaded files or fetch data using token
 def dataprocess(uploaded_file):
-    #uploaded_file =  st.sidebar.file_uploader("Upload a file",accept_multiple_files=True, type="csv")
-    # If a file is uploaded
-    if uploaded_file is not None:
-        #st.write("File uploaded successfully!")
-        #st.write("File contents:")
-        # Read and display file contents
-        #df = uploaded_file.read()
-        #st.write(df)
-       
-    
-    # File uploader widget
-    
-      #st.write("File uploaded:", uploaded_file.name)
-     # Handle different file types
-      #if uploaded_file.name.endswith('.csv'):
+    if token:
+        # If a token is provided, fetch data using the token from the API
+        data = {
+            'token': token,
+            'content': 'record',
+            'action': 'export',
+            'format': 'csv',
+            'type': 'flat',
+            'csvDelimiter': '',
+            'fields[0]': 'participantid_site',
+            'forms[0]': 'case_report_form',
+            'forms[1]': 'sample_collection_form',
+            'forms[2]': 'rdt_laboratory_report_form',
+            'forms[3]': 'pcr_laboratory_report_form',
+            'forms[4]': 'urinalysis_laboratory_report_form',
+            'forms[5]': 'malaria_laboratory_report_form',
+            'rawOrLabel': 'label',
+            'rawOrLabelHeaders': 'raw',
+            'exportCheckboxLabel': 'false',
+            'exportSurveyFields': 'false',
+            'exportDataAccessGroups': 'false',
+            'returnFormat': 'csv'
+        }
+        r = requests.post('https://redcap-acegid.org/api/', data=data)
+        df = pd.read_csv(StringIO(r.text), low_memory=False)
+        st.write(df.head())
+        return df
+    elif uploaded_file is not None:
+        # If files are uploaded, merge them
         dfS = []
         for uploaded_f in uploaded_file:
             d = pd.read_csv(uploaded_f)
             dfS.append(d)
 
         if dfS:
-            dfmerge =  pd.concat(dfS, ignore_index=True)
-            df0=dfmerge.drop_duplicates()
+            dfmerge = pd.concat(dfS, ignore_index=True)
+            df0 = dfmerge.drop_duplicates()
             st.write("Merged DataFrame:")
             st.write(df0)
-            
+
             # Optionally: Save merged DataFrame as a new file
             st.download_button(
                 label="Download Merged CSV",
@@ -99,71 +98,22 @@ def dataprocess(uploaded_file):
             )
             return df0
         else:
-           st.write("No files uploaded or files are empty.")
-           return load_data(url)
+            st.write("No files uploaded or files are empty.")
+            return load_data(url)
     else:
-     #st.write("Please upload files.")
-        #df = pd.read_csv(uploaded_file)
-        #st.write("CSV file data:")
-        #st.dataframe(df)
-      #elif uploaded_file.name.endswith('.xlsx'):
-       # df = pd.read_excel(uploaded_file)
-        #st.write("Excel file data:")
-        #st.dataframe(df)
-      #elif uploaded_file.name.endswith('.txt'):
-       # df = uploaded_file.read().decode("utf-8")
-        #st.write("Text file content:")
-        
-     #st.sidebar.title("Please  upload your own file  or Token")      
-    
-     #if uploaded_file is None:
-    # If a token is provided
-      #if token:
-        #st.sidebar.header("Token provided:", token)
-        data = {
-    'token':token,
-    'content': 'record',
-    'action': 'export',
-    'format': 'csv',
-    'type': 'flat',
-    'csvDelimiter': '',
-    'fields[0]': 'participantid_site',
-    'forms[0]': 'case_report_form',
-   'forms[1]': 'sample_collection_form',
-    'forms[2]': 'rdt_laboratory_report_form',
-   'forms[3]': 'pcr_laboratory_report_form',
-    'forms[4]': 'urinalysis_laboratory_report_form',
-    'forms[5]': 'malaria_laboratory_report_form',
-    'rawOrLabel': 'label',
-    'rawOrLabelHeaders': 'raw',
-    'exportCheckboxLabel': 'false',
-    'exportSurveyFields': 'false',
-    'exportDataAccessGroups': 'false',
-    'returnFormat': 'csv'
-}
-        #r = requests.post('https://redcap-acegid.org/api/',data=data)
+        # If neither files nor token is provided, load data from Google Sheets
+        st.write("No file uploaded or token provided.")
+        return load_data(url)
 
-        #df = pd.read_csv(StringIO(r.text),  low_memory=False)
-       # st.write(df.head())
-      #else:
-        st.write("No file uploaded.")
-        df0=load_data(url)
-
-        return df0
-  
- 
-
-
+# Main function to handle file uploads or token input
 def main():
-    st.title('File Upload')
-    uploaded_file =  st.sidebar.file_uploader("Upload a file",accept_multiple_files=True, type="csv")
+    st.title('File Upload or Provide Token')
+    uploaded_file = st.sidebar.file_uploader("Upload a file", accept_multiple_files=True, type="csv")
     df = dataprocess(uploaded_file)
-    #st.write("DataFrame:")
-    #st.write(df['date_crf'])
     return df
 
-df=main()
-
+# Execute the main function
+df = main()
 #if __name__ == "__main__":
    # main()
    
