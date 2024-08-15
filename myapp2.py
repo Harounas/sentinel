@@ -385,7 +385,7 @@ if select_catcol0:
     dff['Percentage'] = dff['Count'] / dff['Total'] * 100
 
     # Plotting the percentage over time
-    fig, ax = plt.subplots(figsize=(15, 12))
+    fig, ax = plt.subplots(figsize=(20, 15))
     sns.lineplot(x="date_crf", y="Percentage", data=dff, hue=select_catcol0[0], palette='Set1').set(title=' ', xlabel='Date', ylabel='Percentage')
     
     sns.set_theme(style='white', font_scale=3)
