@@ -360,73 +360,74 @@ if select_out:
            
         
 select_catcol0=st.multiselect('Please select categorical/symptom column to make  a line plot:',df.select_dtypes(include='object').columns)
+# Sample categorical column selection
+select_catcol0 = st.multiselect('Please select categorical/symptom column to make a line plot:', df.select_dtypes(include='object').columns)
 if select_catcol0:
     st.write("Selected categorical column is : ", select_catcol0[0])
-    dff= df.groupby(['date_crf', select_catcol0[0]]).size().reset_index(name='Count')
-#dff['Region of site']=dff['Region of site'].replace({'Ikorodu':'IKORODU','Abakaliki ':'Abakaliki','Abakaliki ':'Abakalik','Ebonyi ':'Ebonyi'})
+    dff = df.groupby(['date_crf', select_catcol0[0]]).size().reset_index(name='Count')
 
-#dff= dff[(dff['LGA']=="IKORODU") | (dff['LGA'] == 'OWO') |(dff['LGA'] == 'Abakaliki')|(dff['LGA'] == 'Ebonyi')]
-#dff= dff[(dff['Region of site']=='IKORODU') | (dff['Region of site'] == 'Abakaliki')]
-    dff['date_crf'] =pd.to_datetime(dff['date_crf'] ).dt.strftime('%Y-%m-%d').astype("datetime64")
+    # Convert date column to datetime
+    dff['date_crf'] = pd.to_datetime(dff['date_crf']).dt.strftime('%Y-%m-%d').astype("datetime64")
+
+    # Ensure all combinations of date and category are present
     for val1 in dff['date_crf'].unique():
-      for val2 in dff[select_catcol0[0]].unique():
-        new_row = {'date_crf': val1, select_catcol0[0]: val2,'Count':0}
-        dff = dff.append(new_row, ignore_index=True)
-    #dff['date_crf'] = pd.to_datetime(dff['date_crf'])#now
-    dff=dff.groupby(['date_crf',select_catcol0[0]]).sum().reset_index()[['Count','date_crf',select_catcol0[0]]]
-    dfff=pd.merge(dff,dff.groupby(['date_crf']).sum().reset_index(),on="date_crf")
+        for val2 in dff[select_catcol0[0]].unique():
+            new_row = {'date_crf': val1, select_catcol0[0]: val2, 'Count': 0}
+            dff = dff.append(new_row, ignore_index=True)
 
-   # dfff['date_crf'] = pd.to_datetime(dfff['date_crf'])#now
-    dfff['Total']='Total'
-    fig,ax = plt.subplots(figsize=(15, 12))
-    sns.lineplot( x="date_crf", y="Count_x", data=dfff , hue=select_catcol0[0],palette='Set1').set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
+    # Group by date and category, summing counts
+    dff = dff.groupby(['date_crf', select_catcol0[0]]).sum().reset_index()[['Count', 'date_crf', select_catcol0[0]]]
+
+    # Calculate the total count per date
+    dff['Total'] = dff.groupby('date_crf')['Count'].transform('sum')
+
+    # Calculate the percentage
+    dff['Percentage'] = dff['Count'] / dff['Total'] * 100
+
+    # Plotting the percentage over time
+    fig, ax = plt.subplots(figsize=(15, 12))
+    sns.lineplot(x="date_crf", y="Percentage", data=dff, hue=select_catcol0[0], palette='Set1').set(title=' ', xlabel='Date', ylabel='Percentage')
     
-    #sns.lineplot( x="date_crf", y="Count_y", data=dfff,hue='Total',palette=['black'],).set(title=' ', xlabel='Date', ylabel=select_catcol0[0])
     sns.set_theme(style='white', font_scale=3)
     ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5, fontsize=12)
 
-# Calculate duration
+    # Calculate duration
     start_date = dff['date_crf'].iloc[0]
     end_date = dff['date_crf'].iloc[-1]
     duration = end_date - start_date
 
-# Determine tick frequency
+    # Determine tick frequency
     if duration <= pd.Timedelta(days=90):  # Less than or equal to 2 months
-     tick_freq = '2D'  # Daily
+        tick_freq = '2D'  # Daily
     else:
-     tick_freq = '15D'  # Monthly
+        tick_freq = '15D'  # Monthly
 
-# Generate ticks
+    # Generate ticks
     ticks = pd.date_range(start=start_date, end=end_date, freq=tick_freq)
     labels = [date.strftime('%Y-%m-%d') for date in ticks]
 
-# Set ticks and labels
+    # Set ticks and labels
     ax.set_xticks(ticks)
     ax.set_xticklabels(labels, rotation=45 if tick_freq == 'M' else 90)
 
-# Customize x-axis and y-axis
+    # Customize x-axis and y-axis
     ax.tick_params(axis='x', labelsize=12)
     ax.set_xlabel('Visit date', fontsize=12)  # Adjust as needed
-    ax.set_ylabel('Frequency', fontsize=12) 
-    ax.set_xlabel('Visit date')
-    ax.set_ylabel('Frequency')
+    ax.set_ylabel('Percentage', fontsize=12)
 
-# Adjust layout and display
+    # Adjust layout and display
     fig.tight_layout()
     st.pyplot(fig)
-    fig.tight_layout()
 
-# Save the plot to a file-like object
+    # Save the plot to a file-like object
     buf4 = io.BytesIO()
     fig.savefig(buf4, format='png')
     buf4.seek(0)
 
-# Create a download button for the plot
+    # Create a download button for the plot
     st.download_button(label="Download Plot",
-    data=buf4,
-    file_name="plot_date1.png",
-    #mime="image/png"
-)
+                       data=buf4,
+                       file_name="plot_date1.png")
 
 select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
 if select_catcol:
