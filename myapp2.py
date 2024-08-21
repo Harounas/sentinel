@@ -511,6 +511,7 @@ if select_catcol and select_numcol:
    
    st.write("Selected categorical column is : ", select_catcol[0], "" " and Selected numerical column is : ",select_numcol[0] )
    fig, ax = plt.subplots(figsize=(8, 6))
+
    sns.boxplot(x=select_catcol[0], y=select_numcol[0],data=df1,palette="Set1", width=0.2)
    ax.set_title(' ') 
    ax.set_xlabel(f'{select_catcol[0]}', fontsize=12)  # Adjust fontsize as needed
@@ -563,61 +564,62 @@ def chi_square_test(data1,data2):
 def fishers_exact_test(data):
     oddsratio, p = fisher_exact(data)
     return oddsratio, p
-select_col11=st.multiselect('Please select a first categorical column for statistical analysis',df.select_dtypes(include='object').columns)
-select_col22=st.multiselect('Please select a second categorical column for statisticala analysis',df.select_dtypes(include='object').columns)
+# Multiselect for first categorical column
+select_col11 = st.multiselect(
+    'Please select a first categorical column for statistical analysis', 
+    df.select_dtypes(include='object').columns
+)
+
+# Multiselect for second categorical column
+select_col22 = st.multiselect(
+    'Please select a second categorical column for statistical analysis', 
+    df.select_dtypes(include='object').columns
+)
+
 # Main app
 if select_col11 and select_col22:
-    cat11 = st.multiselect("Choose two categories for the first categorical variable", df[select_col11[0]].unique())
-    cat22 = st.multiselect("Choose two categories for the first categorical variable", df[select_col22[0]].unique())
+    cat11 = st.multiselect(
+        "Choose two categories for the first categorical variable", 
+        df[select_col11[0]].unique()
+    )
+    cat22 = st.multiselect(
+        "Choose two categories for the second categorical variable", 
+        df[select_col22[0]].unique()
+    )
     
-    if not cat11 and not cat22:
-        df1 = df.copy()
-    elif cat11 and not cat22:
-        df1 = df[df[select_col11[0]].isin(cat11)]
-    else:
-        df1 = df[df[select_col22[0]].isin(cat22)]
+    # Filter the DataFrame based on selected categories
+    df1 = df.copy()
+    if cat11:
+        df1 = df1[df1[select_col11[0]].isin(cat11)]
+    if cat22:
+        df1 = df1[df1[select_col22[0]].isin(cat22)]
     
-    # Filter data to selected columns
+    # Filter data to selected columns and drop NaN values
     selected_data = df1[[select_col11[0], select_col22[0]]].dropna()
     
     # Perform chi-square test
-    st.subheader('## Chi-Square Test')
+    st.subheader('Chi-Square Test')
     chi2, p = chi_square_test(selected_data[select_col11[0]], selected_data[select_col22[0]])
     st.write('Chi-Square Statistic:', chi2)
     st.write('P-value:', p)
     
+    # Create crosstab and proportion table
     cross_tab = pd.crosstab(index=selected_data[select_col22[0]], columns=selected_data[select_col11[0]])
     cross_tab_prop = pd.crosstab(index=selected_data[select_col22[0]], columns=selected_data[select_col11[0]], normalize="index")
     
-    # Convert crosstab to long format for Plotly Express
-    cross_tab_long = cross_tab_prop.reset_index().melt(id_vars=select_col22[0], var_name=select_col11[0], value_name='Proportion')
-    
-    # Create the bar plot using Plotly Express
-    fig = px.bar(cross_tab_long, x=select_col22[0], y='Proportion', color=select_col11[0],
-                 text='Proportion', barmode='stack')
-    
-    # Add annotations for the counts
-    for i, row in cross_tab_long.iterrows():
-        proportion = row['Proportion']
-        count = cross_tab.loc[row[select_col22[0]], row[select_col11[0]]]
-        fig.add_annotation(
-            x=row[select_col22[0]],
-            y=proportion / 2,
-            text=f'{count} ({np.round(proportion * 100, 2)}%)',
-            showarrow=False,
-            font=dict(color="black", size=10)
-        )
-    
-    # Update layout for better visuals
-    fig.update_layout(
-        xaxis_title=select_col22[0],
-        yaxis_title="Proportion",
-        legend_title=select_col11[0],
-        barmode='stack',
-        plot_bgcolor='white'
-    )
-    
-    st.plotly_chart(fig)
+    # Plotting
+    st.subheader(f'Crosstab plot {select_col11[0]} vs {select_col22[0]}')
+    fig, ax = plt.subplots(figsize=(6, 4))
+    cross_tab_prop.plot(kind='bar', stacked=True, ax=ax, rot=0, width=0.3)
+    ax.legend(fontsize=8) 
+    # Add text annotations
+    for n, x in enumerate(cross_tab.index.values):
+        for (proportion, count, y_loc) in zip(cross_tab_prop.loc[x], cross_tab.loc[x], cross_tab_prop.loc[x].cumsum()):
+            ax.text(x=n - 0.17, y=(y_loc - proportion) + (proportion / 2),
+                    s=f'{count} ({np.round(proportion*100, 2)}%)',
+                    color="black", fontsize=10, fontweight="bold")
+
+    st.pyplot(fig)
 
     # Perform Fisher's exact test
    #st.subheader("## Fisher's Exact Test")
