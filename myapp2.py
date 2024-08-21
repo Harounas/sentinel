@@ -359,7 +359,7 @@ if select_out:
         
            
         
-select_catcol0=st.multiselect('Please select categorical/symptom column to make  a line plot:',df.select_dtypes(include='object').columns)
+
 # Sample categorical column selection
 select_catcol0 = st.multiselect('Please select categorical/symptom column to make a line plot:', df.select_dtypes(include='object').columns)
 if select_catcol0:
@@ -589,11 +589,11 @@ if select_col11 and select_col22:
    st.write('P-value:', p)
    
     # Perform Fisher's exact test
-   st.subheader("## Fisher's Exact Test")
-   contingency_table = pd.crosstab(selected_data[select_col11[0]], selected_data[select_col22[0]])
-   oddsratio, p = fishers_exact_test(contingency_table)
-   st.write('Odds Ratio:', oddsratio)
-   st.write('P-value:', p)
+   #st.subheader("## Fisher's Exact Test")
+   #contingency_table = pd.crosstab(selected_data[select_col11[0]], selected_data[select_col22[0]])
+   #oddsratio, p = fishers_exact_test(contingency_table)
+   #st.write('Odds Ratio:', oddsratio)
+   #st.write('P-value:', p)
 
 
 
