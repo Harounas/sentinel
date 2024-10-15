@@ -363,6 +363,7 @@ if select_out:
 # Sample categorical column selection
 select_catcol0 = st.multiselect('Please select categorical/symptom column to make a line plot:', df.select_dtypes(include='object').columns)
 if select_catcol0:
+    dff = dff[dff[select_catcol0].apply(lambda x: not pd.to_numeric(x, errors='coerce'))]
     st.write("Selected categorical column is : ", select_catcol0[0])
     dff = df.groupby(['date_crf', select_catcol0[0]]).size().reset_index(name='Count')
 
