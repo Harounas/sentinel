@@ -65,7 +65,7 @@ def dataprocess(uploaded_file):
             'forms[3]': 'pcr_laboratory_report_form',
             'forms[4]': 'urinalysis_laboratory_report_form',
             'forms[5]': 'malaria_laboratory_report_form',
-            'rawOrLabel': 'label',
+            'rawOrLabel': 'raw',
             'rawOrLabelHeaders': 'raw',
             'exportCheckboxLabel': 'false',
             'exportSurveyFields': 'false',
