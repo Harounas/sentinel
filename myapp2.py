@@ -115,14 +115,11 @@ def main():
 # Execute the main function
 df = main()
 
-#if __name__ == "__main__":
-   # main()
    
 if 'siteregion_crf' not in df.columns:
     # Rename 'City/Village' to 'siteregion_crf'
     df = df.rename(columns={'site_sample':'siteregion_crf'})
     df['siteregion_crf']=df['siteregion_crf'].replace({1: "KGH",2: "Kailahun GH",3: "Bo GH", 4: "CHPRL", 5: "Community",6: "Other government hospital",7: "Other clinic",8: "Other hospital"})
-#df = conn.read(spreadsheet=url)
 df['date_crf'] = pd.to_datetime(df['date_crf'], errors='coerce', format='%Y-%m-%d')
 df[['hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']]=df[['hiv_rdt','malaria_rdt','hepb_rdt','hepc_rdt','syphilis_rdt']].replace({1:'Positive',2:'Negative'})
 df=df.dropna(subset=['siteregion_crf'])
