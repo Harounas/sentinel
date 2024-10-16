@@ -615,7 +615,7 @@ if select_col11 and select_col22:
         for (proportion, count, y_loc) in zip(cross_tab_prop.loc[x], cross_tab.loc[x], cross_tab_prop.loc[x].cumsum()):
             ax.text(x=n - 0.17, y=(y_loc - proportion) + (proportion / 2),
                     s=f'{count} ({np.round(proportion*100, 2)}%)',
-                    color="black", fontsize=10, fontweight="bold")
+                    color="black", fontsize=8, fontweight="bold")
 
     st.pyplot(fig)
 
