@@ -608,9 +608,9 @@ if select_col11 and select_col22:
     # Plotting
     st.subheader(f'Crosstab plot {select_col11[0]} vs {select_col22[0]}')
     fig, ax = plt.subplots(figsize=(6, 4))
+    ax.tick_params(axis='x', labelsize=8, pad=3) 
     cross_tab_prop.plot(kind='bar', stacked=True, ax=ax, rot=0, width=0.3)
-    ax.tick_params(axis='x', labelsize=12)
-    ax.legend(fontsize=8) 
+    ax.legend(fontsize=10) 
     # Add text annotations
     for n, x in enumerate(cross_tab.index.values):
         for (proportion, count, y_loc) in zip(cross_tab_prop.loc[x], cross_tab.loc[x], cross_tab_prop.loc[x].cumsum()):
