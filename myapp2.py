@@ -361,10 +361,11 @@ if select_out:
 selected_columns = st.multiselect('Please select categorical/symptom columns to make line plots:', df.select_dtypes(include='object').columns)
 
 if selected_columns:
-    # Create columns for side-by-side plots
-    cols = st.columns(len(selected_columns))
+    # Create rows for side-by-side plots
+    num_columns = 2  # Number of plots per row
+    num_rows = (len(selected_columns) + num_columns - 1) // num_columns  # Calculate number of rows needed
 
-    def plot_percentage_line_plot(col, categorical_column):
+    def plot_percentage_line_plot(categorical_column):
         # Filter out unwanted values
         dff = df[(df[categorical_column] != 3) & (df[categorical_column] != 4)]
         
@@ -391,7 +392,12 @@ if selected_columns:
 
         # Plotting the percentage over time
         fig, ax = plt.subplots(figsize=(10, 6))
-        sns.lineplot(x="date_crf", y="Percentage", data=dff, hue=categorical_column, palette='Set1').set(title='', xlabel='Date', ylabel='Percentage')
+        sns.lineplot(x="date_crf", y="Percentage", data=dff, hue=categorical_column, palette='Set1')
+        
+        # Set title and labels
+        ax.set_title(f'Percentage Over Time for {categorical_column}', fontsize=16)  # Main title with column name
+        ax.set_xlabel('Date', fontsize=12)
+        ax.set_ylabel('Percentage', fontsize=12)
         
         sns.set_theme(style='white', font_scale=1.5)
         ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5, fontsize=10)
@@ -414,50 +420,29 @@ if selected_columns:
 
         # Customize x-axis and y-axis
         ax.tick_params(axis='x', labelsize=10)
-        ax.set_xlabel('Visit date', fontsize=12)
-        ax.set_ylabel('Percentage', fontsize=12)
+        fig.tight_layout()  # Adjust layout
+        return fig  # Return the figure
 
-        # Adjust layout and display
-        fig.tight_layout()
-        col.pyplot(fig)
+    # Loop through selected columns and plot in rows of two
+    for i in range(num_rows):
+        cols = st.columns(num_columns)
+        for j in range(num_columns):
+            index = i * num_columns + j
+            if index < len(selected_columns):
+                categorical_column = selected_columns[index]
+                fig = plot_percentage_line_plot(categorical_column)
+                cols[j].pyplot(fig)  # Display the plot in the respective column
 
-        # Save the plot to a file-like object
-        buf = io.BytesIO()
-        fig.savefig(buf, format='png')
-        buf.seek(0)
+                # Save the plot to a file-like object
+                buf = io.BytesIO()
+                fig.savefig(buf, format='png')
+                buf.seek(0)
 
-        # Create a download button for the plot
-        col.download_button(label=f"Download Plot for {categorical_column}",
-                            data=buf,
-                            file_name=f"plot_{categorical_column}.png")
-
-    # Plot for each selected column
-    for col, categorical_column in zip(cols, selected_columns):
-        st.write(f"Plot for categorical column: {categorical_column}")
-        plot_percentage_line_plot(col, categorical_column)
-        
-        
-        
-
-select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
-if select_catcol:
-    st.write("Selected categorical column is : ", select_catcol[0])
- 
-   # selected_columns = st.multiselect("select column", select_col)
-    s = df[select_catcol[0]].str.strip().value_counts()
-    count_df = pd.DataFrame({f'{select_catcol[0]}': s.index, 'Count': s.values})
-    st.write(count_df)
-    trace = go.Bar(x=s.index,y=s.values,showlegend = False, text=s.values)
-    layout = go.Layout(title = f"Bar plot for {select_catcol[0]}")
-    data = [trace]
-    fig = go.Figure(data=data,layout=layout)
-    st.plotly_chart(fig)
-    
-
-else:
-    st.info('Please select a categorical column using the dropdown above.')
-
-
+                # Create a download button for the plot
+                cols[j].download_button(label=f"Download Plot for {categorical_column}",
+                                        data=buf,
+                                        file_name=f"plot_{categorical_column}.png")
+                
 select_numcol=st.multiselect('Please select numerical column to make  a histogram plot:',df.select_dtypes(include='number').columns)
 
 
