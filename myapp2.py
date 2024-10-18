@@ -355,77 +355,89 @@ if select_out:
         st.write('No outliers detected.')
         
            
-        
+
 
 # Sample categorical column selection
-select_catcol0 = st.multiselect('Please select categorical/symptom column to make a line plot:', df.select_dtypes(include='object').columns)
-if select_catcol0:
-    #dff = dff[(dff[select_catcol0]!=3)&(dff[select_catcol0]!=4)]
-    st.write("Selected categorical column is : ", select_catcol0[0])
-    dff = df.groupby(['date_crf', select_catcol0[0]]).size().reset_index(name='Count')
+selected_columns = st.multiselect('Please select categorical/symptom columns to make line plots:', df.select_dtypes(include='object').columns)
 
-    # Convert date column to datetime
-    dff['date_crf'] = pd.to_datetime(dff['date_crf']).dt.strftime('%Y-%m-%d').astype("datetime64")
+if selected_columns:
+    # Create columns for side-by-side plots
+    cols = st.columns(len(selected_columns))
 
-    # Ensure all combinations of date and category are present
-    for val1 in dff['date_crf'].unique():
-        for val2 in dff[select_catcol0[0]].unique():
-            new_row = {'date_crf': val1, select_catcol0[0]: val2, 'Count': 0}
-            dff = dff.append(new_row, ignore_index=True)
+    def plot_percentage_line_plot(col, categorical_column):
+        # Filter out unwanted values
+        dff = df[(df[categorical_column] != 3) & (df[categorical_column] != 4)]
+        
+        # Group by date and selected column, calculate count
+        dff = dff.groupby(['date_crf', categorical_column]).size().reset_index(name='Count')
+        
+        # Convert date column to datetime
+        dff['date_crf'] = pd.to_datetime(dff['date_crf']).dt.strftime('%Y-%m-%d').astype("datetime64")
 
-    # Group by date and category, summing counts
-    dff = dff.groupby(['date_crf', select_catcol0[0]]).sum().reset_index()[['Count', 'date_crf', select_catcol0[0]]]
+        # Ensure all combinations of date and category are present
+        for val1 in dff['date_crf'].unique():
+            for val2 in dff[categorical_column].unique():
+                new_row = {'date_crf': val1, categorical_column: val2, 'Count': 0}
+                dff = dff.append(new_row, ignore_index=True)
 
-    # Calculate the total count per date
-    dff['Total'] = dff.groupby('date_crf')['Count'].transform('sum')
+        # Group by date and category, summing counts
+        dff = dff.groupby(['date_crf', categorical_column]).sum().reset_index()[['Count', 'date_crf', categorical_column]]
 
-    # Calculate the percentage
-    dff['Percentage'] = dff['Count'] / dff['Total'] * 100
+        # Calculate total count per date
+        dff['Total'] = dff.groupby('date_crf')['Count'].transform('sum')
 
-    # Plotting the percentage over time
-    fig, ax = plt.subplots(figsize=(20, 15))
-    sns.lineplot(x="date_crf", y="Percentage", data=dff, hue=select_catcol0[0], palette='Set1').set(title=' ', xlabel='Date', ylabel='Percentage')
-    
-    sns.set_theme(style='white', font_scale=3)
-    ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5, fontsize=12)
+        # Calculate the percentage
+        dff['Percentage'] = dff['Count'] / dff['Total'] * 100
 
-    # Calculate duration
-    start_date = dff['date_crf'].iloc[0]
-    end_date = dff['date_crf'].iloc[-1]
-    duration = end_date - start_date
+        # Plotting the percentage over time
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.lineplot(x="date_crf", y="Percentage", data=dff, hue=categorical_column, palette='Set1').set(title='', xlabel='Date', ylabel='Percentage')
+        
+        sns.set_theme(style='white', font_scale=1.5)
+        ax.legend(loc='upper center', fancybox=True, shadow=True, ncol=5, fontsize=10)
 
-    # Determine tick frequency
-    if duration <= pd.Timedelta(days=90):  # Less than or equal to 2 months
-        tick_freq = '2D'  # Daily
-    else:
-        tick_freq = '15D'  # Monthly
+        # Calculate duration
+        start_date = dff['date_crf'].iloc[0]
+        end_date = dff['date_crf'].iloc[-1]
+        duration = end_date - start_date
 
-    # Generate ticks
-    ticks = pd.date_range(start=start_date, end=end_date, freq=tick_freq)
-    labels = [date.strftime('%Y-%m-%d') for date in ticks]
+        # Determine tick frequency
+        tick_freq = '2D' if duration <= pd.Timedelta(days=90) else '15D'  # Daily or Monthly
 
-    # Set ticks and labels
-    ax.set_xticks(ticks)
-    ax.set_xticklabels(labels, rotation=45 if tick_freq == 'M' else 90)
+        # Generate ticks
+        ticks = pd.date_range(start=start_date, end=end_date, freq=tick_freq)
+        labels = [date.strftime('%Y-%m-%d') for date in ticks]
 
-    # Customize x-axis and y-axis
-    ax.tick_params(axis='x', labelsize=12)
-    ax.set_xlabel('Visit date', fontsize=12)  # Adjust as needed
-    ax.set_ylabel('Percentage', fontsize=12)
+        # Set ticks and labels
+        ax.set_xticks(ticks)
+        ax.set_xticklabels(labels, rotation=45 if tick_freq == 'M' else 90)
 
-    # Adjust layout and display
-    fig.tight_layout()
-    st.pyplot(fig)
+        # Customize x-axis and y-axis
+        ax.tick_params(axis='x', labelsize=10)
+        ax.set_xlabel('Visit date', fontsize=12)
+        ax.set_ylabel('Percentage', fontsize=12)
 
-    # Save the plot to a file-like object
-    buf4 = io.BytesIO()
-    fig.savefig(buf4, format='png')
-    buf4.seek(0)
+        # Adjust layout and display
+        fig.tight_layout()
+        col.pyplot(fig)
 
-    # Create a download button for the plot
-    st.download_button(label="Download Plot",
-                       data=buf4,
-                       file_name="plot_date1.png")
+        # Save the plot to a file-like object
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png')
+        buf.seek(0)
+
+        # Create a download button for the plot
+        col.download_button(label=f"Download Plot for {categorical_column}",
+                            data=buf,
+                            file_name=f"plot_{categorical_column}.png")
+
+    # Plot for each selected column
+    for col, categorical_column in zip(cols, selected_columns):
+        st.write(f"Plot for categorical column: {categorical_column}")
+        plot_percentage_line_plot(col, categorical_column)
+        
+        
+        
 
 select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
 if select_catcol:
@@ -483,8 +495,9 @@ else:
     st.info('Please select a numerical column using the dropdown above.')
 
 
-select_catcol=st.multiselect('Please select categorical column to make  a box plot:',df.select_dtypes(include='object').columns)
-select_numcol=st.multiselect('Please select categorical column to make  a box plot:',df.select_dtypes(include='number').columns)
+# Select categorical and numerical columns
+select_catcol = st.multiselect('Please select categorical column to make a box plot:', df.select_dtypes(include='object').columns)
+select_numcol = st.multiselect('Please select numerical column to make a box plot:', df.select_dtypes(include='number').columns)
 
 def t_test(sample1, sample2):
     t_statistic, p_value = stats.ttest_ind(sample1, sample2)
@@ -495,61 +508,62 @@ def mann_whitney_test(sample1, sample2):
     return u_statistic, p_value
 
 if select_catcol and select_numcol:
-   cat=st.multiselect("Choose two categories",   df[select_catcol[0]].unique())
-   if not cat:
-       df1=df.copy()
-       df1[select_numcol[0]]=df1[select_numcol[0]].fillna(df1[select_numcol[0]].mean())
-       sample1=df1.loc[df1[select_catcol[0]]==df1[select_catcol[0]].value_counts().index.tolist()[0]][select_numcol[0]]
-       sample2=df1.loc[df1[select_catcol[0]]==df1[select_catcol[0]].value_counts().index.tolist()[1]][select_numcol[0]]
-   else:
-      df1=df[df[select_catcol[0]].isin(cat)] 
-      df1[select_numcol[0]]=df1[select_numcol[0]].fillna(df1[select_numcol[0]].mean())
-      sample1=df1.loc[df1[select_catcol[0]]==cat[0]][select_numcol[0]]
-      sample2=df1.loc[df1[select_catcol[0]]==cat[1]][select_numcol[0]]
-   
-   st.write("Selected categorical column is : ", select_catcol[0], "" " and Selected numerical column is : ",select_numcol[0] )
-   fig, ax = plt.subplots(figsize=(8, 6))
+    # Use selectbox for choosing categories
+    categories = df[select_catcol[0]].unique()
+    cat1 = st.selectbox("Choose the first category", categories)
+    cat2 = st.selectbox("Choose the second category", categories)
 
-   sns.boxplot(x=select_catcol[0], y=select_numcol[0],data=df1,palette="Set1", width=0.2)
-   ax.set_title(' ') 
-   ax.set_xlabel(f'{select_catcol[0]}', fontsize=12)  # Adjust fontsize as needed
-   ax.set_ylabel(f'{select_numcol[0]}', fontsize=12) 
-   ax.tick_params(axis='x', labelsize=12)  # Reduce x-axis tick label size
-   ax.tick_params(axis='y', labelsize=12)  # Reduce y-axis tick label size
-   fig.tight_layout()
-# Display the plot in Streamlit app
-   st.pyplot(fig)
-   #st.write(dfs.loc[dfs[select_catcol[0]]==dfs[select_catcol[0]].value_counts().index.tolist()[0]]['Sex'])
-   buf3 = io.BytesIO()
-   fig.savefig(buf3, format='png')
-   buf3.seek(0)
+    if cat1 == cat2:
+        st.warning("Please select two different categories.")
+    else:
+        df1 = df[df[select_catcol[0]].isin([cat1, cat2])]
+        df1[select_numcol[0]] = df1[select_numcol[0]].fillna(df1[select_numcol[0]].mean())
+        
+        sample1 = df1.loc[df1[select_catcol[0]] == cat1][select_numcol[0]]
+        sample2 = df1.loc[df1[select_catcol[0]] == cat2][select_numcol[0]]
 
-# Create a download button for the plot
-   st.download_button(
-   label="Download Plot",
-    data=buf3,
-    file_name="plot_box.png",
-    mime="image/png"
-)
-   # Perform Mann-Whitney U test
-   
-   #sample1=df1.loc[df1[select_catcol[0]]==df1[select_catcol[0]].value_counts().index.tolist()[0]][select_numcol[0]]
-  # sample2=df1.loc[df1[select_catcol[0]]==df1[select_catcol[0]].value_counts().index.tolist()[1]][select_numcol[0]]
-   # Perform t-test
-   t_statistic, t_p_value = t_test(sample1, sample2)
+        st.write("Selected categorical column is: ", select_catcol[0], " and Selected numerical column is: ", select_numcol[0])
+        
+        # Plotting
+        fig, ax = plt.subplots(figsize=(8, 6))
+        sns.boxplot(x=select_catcol[0], y=select_numcol[0], data=df1, palette="Set1", width=0.2)
+        ax.set_title(' ')
+        ax.set_xlabel(f'{select_catcol[0]}', fontsize=12)
+        ax.set_ylabel(f'{select_numcol[0]}', fontsize=12)
+        ax.tick_params(axis='x', labelsize=12)
+        ax.tick_params(axis='y', labelsize=12)
+        fig.tight_layout()
 
-    # Perform Mann-Whitney U test
-   u_statistic, u_p_value = mann_whitney_test(sample1, sample2)
+        # Display the plot in Streamlit app
+        st.pyplot(fig)
 
-    # Display results
-   st.write("### Statistical test")
-   st.write("#### Independent Samples t-test")
-   st.write(f"T-Statistic: {t_statistic}")
-   st.write(f"P-Value: {t_p_value}")
+        buf3 = io.BytesIO()
+        fig.savefig(buf3, format='png')
+        buf3.seek(0)
 
-   st.write("#### Mann-Whitney U Test")
-   st.write(f"U-Statistic: {u_statistic}")
-   st.write(f"P-Value: {u_p_value}")
+        # Create a download button for the plot
+        st.download_button(
+            label="Download Plot",
+            data=buf3,
+            file_name="plot_box.png",
+            mime="image/png"
+        )
+
+        # Perform t-test
+        t_statistic, t_p_value = t_test(sample1, sample2)
+
+        # Perform Mann-Whitney U test
+        u_statistic, u_p_value = mann_whitney_test(sample1, sample2)
+
+        # Display results
+        st.write("### Statistical test")
+        st.write("#### Independent Samples t-test")
+        st.write(f"T-Statistic: {t_statistic}")
+        st.write(f"P-Value: {t_p_value}")
+
+        st.write("#### Mann-Whitney U Test")
+        st.write(f"U-Statistic: {u_statistic}")
+        st.write(f"P-Value: {u_p_value}")
 
 
 # Function to perform chi-square test
@@ -562,6 +576,15 @@ def chi_square_test(data1,data2):
 def fishers_exact_test(data):
     oddsratio, p = fisher_exact(data)
     return oddsratio, p
+
+# Function to calculate confidence intervals for odds ratio
+def calculate_confidence_interval(odds_ratio, a, b, c, d, alpha=0.05):
+    se_log_or = np.sqrt(1/a + 1/b + 1/c + 1/d)
+    z = -1 * np.percentile(np.random.normal(size=100000), alpha * 100)
+    ci_lower = np.exp(np.log(odds_ratio) - z * se_log_or)
+    ci_upper = np.exp(np.log(odds_ratio) + z * se_log_or)
+    return ci_lower, ci_upper
+
 # Multiselect for first categorical column
 select_col11 = st.multiselect(
     'Please select a first categorical column for statistical analysis', 
@@ -585,21 +608,34 @@ if select_col11 and select_col22:
         df[select_col22[0]].unique()
     )
     
-    # Filter the DataFrame based on selected categories
     df1 = df.copy()
     if cat11:
         df1 = df1[df1[select_col11[0]].isin(cat11)]
     if cat22:
         df1 = df1[df1[select_col22[0]].isin(cat22)]
     
-    # Filter data to selected columns and drop NaN values
     selected_data = df1[[select_col11[0], select_col22[0]]].dropna()
-    
     # Perform chi-square test
     st.subheader('Chi-Square Test')
     chi2, p = chi_square_test(selected_data[select_col11[0]], selected_data[select_col22[0]])
     st.write('Chi-Square Statistic:', chi2)
     st.write('P-value:', p)
+    
+    # Check if we have exactly two categories for both variables
+    unique_cat11 = selected_data[select_col11[0]].nunique()
+    unique_cat22 = selected_data[select_col22[0]].nunique()
+
+    if unique_cat11 == 2 and unique_cat22 == 2:
+        # Create crosstab for Fisher's exact test
+        cross_tab = pd.crosstab(index=selected_data[select_col22[0]], columns=selected_data[select_col11[0]])
+
+        # Perform Fisher's exact test
+        st.subheader('Fisher\'s Exact Test')
+        odds_ratio, fisher_p = fisher_exact(cross_tab)
+        st.write('Odds Ratio:', odds_ratio)
+        st.write('Fisher\'s Exact Test P-value:', fisher_p)
+    else:
+        st.warning('Fisher\'s exact test can only be performed with exactly two categories for both variables.')
     
     # Create crosstab and proportion table
     cross_tab = pd.crosstab(index=selected_data[select_col22[0]], columns=selected_data[select_col11[0]])
@@ -608,7 +644,7 @@ if select_col11 and select_col22:
     # Plotting
     st.subheader(f'Crosstab plot {select_col11[0]} vs {select_col22[0]}')
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.tick_params(axis='x', labelsize=8, pad=3) 
+    ax.tick_params(axis='x', labelsize=8, pad=3)  # Reduce label size and pad
     cross_tab_prop.plot(kind='bar', stacked=True, ax=ax, rot=0, width=0.3)
     ax.legend(fontsize=10) 
     # Add text annotations
@@ -619,34 +655,107 @@ if select_col11 and select_col22:
                     color="black", fontsize=8, fontweight="bold")
 
     st.pyplot(fig)
+    # Check if we have exactly two categories for both variables
+    unique_cat11 = selected_data[select_col11[0]].nunique()
+    unique_cat22 = selected_data[select_col22[0]].nunique()
 
-    # Perform Fisher's exact test
-   #st.subheader("## Fisher's Exact Test")
-   #contingency_table = pd.crosstab(selected_data[select_col11[0]], selected_data[select_col22[0]])
-   #oddsratio, p = fishers_exact_test(contingency_table)
-   #st.write('Odds Ratio:', oddsratio)
-   #st.write('P-value:', p)
+    if unique_cat11 == 2 and unique_cat22 == 2:
+        # Create crosstab for Fisher's exact test
+        cross_tab = pd.crosstab(index=selected_data[select_col22[0]], columns=selected_data[select_col11[0]])
 
+        # Perform Fisher's exact test for 2x2 tables
+        st.subheader('Fisher\'s Exact Test (2x2 Table)')
+        odds_ratio, fisher_p = fisher_exact(cross_tab)
+        st.write('Odds Ratio:', odds_ratio)
+        st.write('Fisher\'s Exact Test P-value:', fisher_p)
+    else:
+        st.warning('Fisher\'s exact test can only be performed with exactly two categories for both variables.')
 
+    # Check if we can proceed with the reference group selection for multiple categories
+    if not selected_data.empty:
+        # Create a dropdown menu to select the reference group
+        cross_tab = pd.crosstab(index=selected_data[select_col22[0]], columns=selected_data[select_col11[0]])
+        ref_group = st.selectbox('Select the reference group for Fisher\'s Exact Test', cross_tab.index)
 
+        # Check if Fisher's exact test can be performed (multiple categories)
+        if cross_tab.shape[0] > 2 or cross_tab.shape[1] > 2:
+            st.subheader('Fisher\'s Exact Test for Multiple Categories')
+
+            # Get the reference group data
+            ref_group_data = cross_tab.loc[ref_group].values
+
+            # Initialize results dictionary
+            results = {}
+
+            # Loop over each group and perform Fisher's exact test
+            for group in cross_tab.index:
+                if group != ref_group:
+                    group_data = cross_tab.loc[group].values
+                    table = [[group_data[0], group_data[1]], [ref_group_data[0], ref_group_data[1]]]
+                    
+                    # Perform Fisher's Exact Test
+                    oddsratio, p_value = fisher_exact(table)
+                    ci_lower, ci_upper = calculate_confidence_interval(
+                        oddsratio,
+                        group_data[0], group_data[1],
+                        ref_group_data[0], ref_group_data[1]
+                    )
+                    
+                    results[group] = {
+                        'odds_ratio': oddsratio,
+                        'p_value': p_value,
+                        'ci_lower': ci_lower,
+                        'ci_upper': ci_upper
+                    }
+
+            # Convert results to a DataFrame
+            results_df = pd.DataFrame(results).T
+
+            # Adjust p-values for multiple testing
+            p_values = results_df['p_value'].values
+            _, p_adj, _, _ = multipletests(p_values, method='fdr_bh')
+            results_df['p_adj'] = p_adj
+
+            # Display results
+            st.dataframe(results_df)
+
+        else:
+            st.warning('Fisher\'s exact test for multiple categories can only be performed with more than two categories.')
+    else:
+        st.warning('The crosstab is empty. Please select valid categories.')
+    
 st.title("Feature Selection with Streamlit")
 df = df.dropna(axis=1, how='all')
 # Choose dependent variable
-#default_target = df.columns[0]  # First column as default target variable
-#default_independent = [col for col in df.columns if col != default_target]
-#target_variable = st.selectbox("Choose the dependent variable", options=df.columns,index=df.columns.get_loc(default_target))
+default_target = df.columns[0]  # First column as default target variable
+default_independent = [col for col in df.columns if col != default_target]
+# Filter out categorical columns with more than 10 unique categories
+nokit = df.loc[:, ~df.columns.str.contains('kit', case=False)]
+filtered_columns = [col for col in nokit.columns if nokit[col].nunique() <= 7]
+
+# Filter categorical columns with 7 or fewer unique categories
+categorical_columns = nokit.select_dtypes(include=['object', 'category']).columns
+filtered_categorical_columns = [col for col in categorical_columns if nokit[col].nunique() <= 7]
+
+# Keep all numerical columns
+numerical_columns = nokit.select_dtypes(include=['number']).columns
+
+# Combine filtered categorical columns and numerical columns
+filtered_columns = list(filtered_categorical_columns) + list(numerical_columns)
+
+
+target_variable = st.selectbox("Choose the dependent variable", options=filtered_columns,index=nokit.columns.get_loc(default_target))
 
 # Choose independent variables
 #independent_variables = st.multiselect("Choose independent variables", options=[col for col in df.columns if col != target_variable],default=default_independent)
 # Default selection
-default_target = df.columns[5]  # First column as default target variable
-default_independent = [col for col in df.columns if col != default_target][6:16]  # All other columns as default independent variables
+#default_target = df.columns[5]  # First column as default target variable
+#default_independent = [col for col in df.columns if col != default_target][6:16]  # All other columns as default independent variables
 
-# Choose dependent variable
-target_variable = st.selectbox("Choose the dependent variable", options=df.columns, index=df.columns.get_loc(default_target))
+
 
 # Ensure the default values are valid options
-available_independent_vars = [col for col in df.columns if col != target_variable]
+available_independent_vars = [col for col in nokit.columns if col != target_variable]
 default_independent = [var for var in default_independent if var in available_independent_vars]
 
 # Choose independent variables
