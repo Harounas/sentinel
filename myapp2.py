@@ -442,7 +442,100 @@ if selected_columns:
                 cols[j].download_button(label=f"Download Plot for {categorical_column}",
                                         data=buf,
                                         file_name=f"plot_{categorical_column}.png")
-                
+
+select_catcol=st.multiselect('Please select categorical column to make  a bar plot:',df.select_dtypes(include='object').columns)
+if select_catcol:
+    st.write("Selected categorical column is : ", select_catcol[0])
+ 
+   # selected_columns = st.multiselect("select column", select_col)
+    s = df[select_catcol[0]].str.strip().value_counts()
+    count_df = pd.DataFrame({f'{select_catcol[0]}': s.index, 'Count': s.values})
+    st.write(count_df)
+    trace = go.Bar(x=s.index,y=s.values,showlegend = False, text=s.values)
+    layout = go.Layout(title = f"Bar plot for {select_catcol[0]}")
+    data = [trace]
+    fig = go.Figure(data=data,layout=layout)
+    st.plotly_chart(fig)
+    
+
+else:
+    st.info('Please select a categorical column using the dropdown above.')
+
+
+
+# Sample categorical column selection
+selected_columns = st.multiselect('Please select categorical/symptom columns to make pie charts:', df.select_dtypes(include='object').columns)
+
+
+if selected_columns:
+    # Create rows for side-by-side plots
+    num_columns = 2  # Number of plots per row
+    num_rows = (len(selected_columns) + num_columns - 1) // num_columns  # Calculate number of rows needed
+
+    def plot_percentage_pie_chart(categorical_column):
+        # Filter out unwanted values
+        dff = df[(df[categorical_column] != 3) & (df[categorical_column] != 4)]
+        
+        # Calculate counts for each category
+        category_counts = dff[categorical_column].value_counts()
+        
+        # Create a pie chart with reduced figure size
+        fig, ax = plt.subplots(figsize=(5, 4))  # Reduced size (width, height)
+
+        # Create a pie chart without labels and include percentages
+        wedges, _ = ax.pie(
+            category_counts,
+            labels=None,  # Remove labels from the pie chart
+            #autopct='%1.1f%%',  # Format for percentage display
+            startangle=90,  # Start angle for the pie chart
+            colors=plt.cm.Set1.colors  # Color map for pie sections
+        )
+
+        # Set font size for percentage text
+        #for text in autotexts:
+           # text.set_fontsize(12)  # Adjust font size for percentage text
+
+        ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        
+        # Set title with reduced font size
+        ax.set_title(f'Distribution of {categorical_column}', fontsize=10)  # Title with adjusted fontsize
+
+        # Create custom legend labels with count and percentage
+        legend_labels = [f"{category}: {count} ({count / dff.shape[0] * 100:.2f}%)" for category, count in category_counts.items()]
+
+        # Add legend with smaller text
+        ax.legend(
+            wedges, 
+            legend_labels,  # Use the custom legend labels
+            loc="upper right", 
+            bbox_to_anchor=(1.5, 1), 
+            fontsize=8  # Font size for legend
+        )
+
+        plt.tight_layout()  # Adjust layout for better spacing
+        return fig  # Return the figure
+
+    # Loop through selected columns and plot in rows of two
+    for i in range(num_rows):
+        cols = st.columns(num_columns)
+        for j in range(num_columns):
+            index = i * num_columns + j
+            if index < len(selected_columns):
+                categorical_column = selected_columns[index]
+                fig = plot_percentage_pie_chart(categorical_column)
+                cols[j].pyplot(fig)  # Display the plot in the respective column
+
+                # Save the plot to a file-like object
+                buf = io.BytesIO()
+                fig.savefig(buf, format='png')
+                buf.seek(0)
+
+                # Create a download button for the plot
+                cols[j].download_button(
+                    label=f"Download Pie Chart for {categorical_column}",
+                    data=buf,
+                    file_name=f"pie_chart_{categorical_column}.png"
+                )               
 select_numcol=st.multiselect('Please select numerical column to make  a histogram plot:',df.select_dtypes(include='number').columns)
 
 
